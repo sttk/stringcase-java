@@ -1,0 +1,28 @@
+name: Java CI
+
+on:
+  push:
+    branches: [ '*', '*/*' ]
+
+jobs:
+  build:
+    name: Build for GraalVM (OpenJDK ${{ matrix.javaver }}) on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        javaver: [21]
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    steps:
+    - uses: actions/checkout@v4
+    - name: GitHub Action for GraalVM
+      uses: graalvm/setup-graalvm@v1
+      with:
+        java-version: ${{ matrix.javaver }}
+        distribution: 'graalvm'
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        native-image-job-reports: 'true'
+    - name: Build and test
+      run: mvn package
+    - name: Native test
+      run: mvn -Pnative test
