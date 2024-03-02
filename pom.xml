@@ -210,7 +210,7 @@
         <repository>
           <id>github</id>
           <name>GitHub Packages</name>
-          <url>https://maven.pkg.github.com/sttk/linebreak-java</url>
+          <url>https://maven.pkg.github.com/sttk/stringcase-java</url>
         </repository>
       </distributionManagement>
     </profile>
