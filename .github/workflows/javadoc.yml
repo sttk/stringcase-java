@@ -1,0 +1,28 @@
+name: Javadoc
+
+on:
+  release:
+    types: [ created ]
+
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: GitHub Action for GraalVM
+      uses: graalvm/setup-graalvm@v1
+      with:
+        java-version: 21
+        distribution: 'graalvm'
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+    - name: Compile
+      run: mvn compile
+    - name: Javadoc
+      run: mvn javadoc:javadoc
+    - name: Publish Documentation on GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./target/site/apidocs
+
