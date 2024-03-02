@@ -1,0 +1,1 @@
+moduleSearchIndex = [{"l":"com.github.sttk.stringcase"}];updateSearchResults();

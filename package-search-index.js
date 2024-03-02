@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"m":"com.github.sttk.stringcase","l":"com.github.sttk.stringcase"}];updateSearchResults();
