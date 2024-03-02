@@ -1468,7 +1468,7 @@ public final class StringCase {
    *
    * <pre>{@code
    *     let snake = stringcase::snake_case_with_keep("foo-bar100%baz", "%");
-   *     assert_eq!(snake, "foo_bar100%_baz");
+   *     // => "foo_bar100%_baz"
    * }</pre>
    *
    * @param input  A string to be converted.
@@ -1556,6 +1556,9 @@ public final class StringCase {
    *     String train = StringCase.trainCase("fooBarBaz");
    *     // => "Foo-Bar-Baz"
    * }</pre>
+   *
+   * @param input  A string to be converted.
+   * @return  A string converted to train case.
    */
   public static String trainCase(String input) {
     var result = new CodepointBuffer(input.length() * 2);
@@ -1642,6 +1645,11 @@ public final class StringCase {
    *     String train = StringCase.trainCaseWithSep("foo-Bar100%Baz", "- ");
    *     // => "Foo-Bar100%-Baz"
    * }</pre>
+   *
+   * @param input  A string to be converted.
+   * @param seps  A string that consists of characters that are word
+   *   separators.
+   * @return  A string converted to train case.
    */
   public static String trainCaseWithSep(String input, String seps) {
     var result = new CodepointBuffer(input.length() * 2);
@@ -1732,6 +1740,11 @@ public final class StringCase {
    *     String train = StringCase.trainCaseWithKeep("foo-bar100%baz", "%");
    *     // => "Foo-Bar100%-Baz"
    * }</pre>
+   *
+   * @param input  A string to be converted.
+   * @param keeped  A string that consists of characters that are not word
+   *   separators.
+   * @return  A string converted to train case.
    */
   public static String trainCaseWithKeep(String input, String keeped) {
     var result = new CodepointBuffer(input.length() * 2);
