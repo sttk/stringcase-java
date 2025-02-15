@@ -17,7 +17,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
-          java-version: 21
+          java-version: 23
       - name: Build with Maven
         run: mvn -ntp -B package
       - name: Publish to GitHub Packages
@@ -28,7 +28,7 @@ jobs:
       - name: Set up Maven Central Repository
         uses: actions/setup-java@v4
         with:
-          java-version: '21'
+          java-version: '23'
           distribution: 'temurin'
           server-id: ossrh
           server-username: MAVEN_USERNAME
