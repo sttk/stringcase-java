@@ -1,6 +1,6 @@
 /*
  * StringCase class.
- * Copyright (C) 2024 Takayuki Sato. All Rights Reserved.
+ * Copyright (C) 2024-2025 Takayuki Sato. All Rights Reserved.
  */
 package com.github.sttk.stringcase;
 
@@ -9,260 +9,146 @@ import com.github.sttk.stringcase.codepoint.CodepointBuffer;
 import java.util.Arrays;
 
 /**
- * {@code StringCase} is the class that provides the static methods to convert
- * a string to various cases.
+ * Is the class that provides the static methods to convert a string to following cases.
+ *
+ * - camelCase
+ * - COBOL-CASE
+ * - kebab-case
+ * - MACRO_CASE
+ * - PascalCase
+ * - snake_case
+ * - Train-Case
  */
 public final class StringCase {
   private StringCase() {}
 
+  private enum ChIs {
+    FirstOfStr,
+    NextOfUpper,
+    NextOfContdUpper,
+    NextOfSepMark,
+    NextOfKeptMark,
+    Others,
+  }
+
   /**
-   * Converts a string to camel case.
+   * Converts the input string to camel case with the specified options.
    *
-   * This method takes a string as its arguments, then returns a string of
-   * which the case style is camel case.
+   * @param input  The input string.
+   * @param opts  The options which specifies the ways of case conversion.
+   * @return  A string converted to camel case.
+   */
+  public static String camelCaseWithOptions(String input, Options opts) {
+    var result = new CodepointBuffer(input.length());
+
+    var flag = ChIs.FirstOfStr;
+
+    int[] sepChs = null;
+    if (opts.separators != null && !opts.separators.isEmpty()) {
+      sepChs = opts.separators.codePoints().toArray();
+      Arrays.sort(sepChs);
+    }
+
+    int[] keptChs = null;
+    if (opts.keep != null && !opts.keep.isEmpty()) {
+      keptChs = opts.keep.codePoints().toArray();
+      Arrays.sort(keptChs);
+    }
+
+    for (int ch : input.codePoints().toArray()) {
+      if (Ascii.isUpperCase(ch)) {
+        if (flag == ChIs.FirstOfStr) {
+          result.append(Ascii.toLowerCase(ch));
+          flag = ChIs.NextOfUpper;
+        } else if (flag == ChIs.NextOfUpper || flag == ChIs.NextOfContdUpper ||
+          (!opts.separateAfterNonAlphabets && flag == ChIs.NextOfKeptMark)) {
+          result.append(Ascii.toLowerCase(ch));
+          flag = ChIs.NextOfContdUpper;
+        } else {
+          result.append(ch);
+          flag = ChIs.NextOfUpper;
+        }
+      } else if (Ascii.isLowerCase(ch)) {
+        if (flag == ChIs.NextOfContdUpper) {
+          int prev = result.last();
+          if (Ascii.isLowerCase(prev)) {
+            prev = Ascii.toUpperCase(prev);
+          }
+          result.replaceLast(prev, ch);
+        } else if (flag == ChIs.NextOfSepMark ||
+          (opts.separateAfterNonAlphabets && flag == ChIs.NextOfKeptMark)) {
+          result.append(Ascii.toUpperCase(ch));
+        } else {
+          result.append(ch);
+        }
+        flag = ChIs.Others;
+      } else {
+        var isKeptChar = false;
+        if (Ascii.isDigit(ch)) {
+          isKeptChar = true;
+        } else if (sepChs != null) {
+          if (Arrays.binarySearch(sepChs, ch) < 0) {
+            isKeptChar = true;
+          }
+        } else if (keptChs != null) {
+          if (Arrays.binarySearch(keptChs, ch) >= 0) {
+            isKeptChar = true;
+          }
+        }
+
+        if (isKeptChar) {
+          result.append(ch);
+          flag = ChIs.NextOfKeptMark;
+        } else {
+          if (flag != ChIs.FirstOfStr) {
+            flag = ChIs.NextOfSepMark;
+          }
+        }
+      }
+    }
+
+    return result.toString();
+  }
+
+  /**
+   * Converts the input string to camel case.
+   * <p>
+   * It treats the end of a sequence of non-alphabetical characters as a word boundary, but not
+   * the beginning.
    *
-   * This method targets only the upper and lower cases of ASCII alphabets for
-   * capitalization, and all characters except ASCII alphabets and ASCII
-   * numbers are eliminated as word separators.
-   *
-   * <pre>{@code
-   *     String camel = StringCase.camelCase("foo_bar_baz");
-   *     // => "fooBarBaz"
-   * }</pre>
-   *
-   * @param input  A string to be converted.
+   * @param input  The input string.
    * @return  A string converted to camel case.
    */
   public static String camelCase(String input) {
-    var result = new CodepointBuffer(input.length());
-
-    enum ChIs {
-      FirstOfStr,
-      InFirstWord,
-      NextOfUpper,
-      NextOfMark,
-      Others,
-    }
-    var flag = ChIs.FirstOfStr;
-
-    for (int ch : input.codePoints().toArray()) {
-      if (Ascii.isUpperCase(ch)) {
-        switch (flag) {
-        case ChIs.FirstOfStr:
-        case ChIs.InFirstWord:
-          result.append(Ascii.toLowerCase(ch));
-          flag = ChIs.InFirstWord;
-          break;
-        case ChIs.NextOfUpper:
-          result.append(Ascii.toLowerCase(ch));
-          //flag = ChIs.NextOfUpper;
-          break;
-        default:
-          result.append(ch);
-          flag = ChIs.NextOfUpper;
-          break;
-        }
-      } else if (Ascii.isLowerCase(ch)) {
-        switch (flag) {
-        case ChIs.NextOfUpper:
-          int prev = result.last();
-          if (Ascii.isLowerCase(prev)) {
-            prev = Ascii.toUpperCase(prev);
-          }
-          result.replaceLast(prev, ch);
-          flag = ChIs.Others;
-          break;
-        case ChIs.NextOfMark:
-          result.append(Ascii.toUpperCase(ch));
-          flag = ChIs.NextOfUpper;
-          break;
-        default:
-          result.append(ch);
-          flag = ChIs.Others;
-          break;
-        }
-      } else if (Ascii.isDigit(ch)) {
-        result.append(ch);
-        flag = ChIs.NextOfMark;
-      } else {
-        if (flag != ChIs.FirstOfStr) {
-          flag = ChIs.NextOfMark;
-        }
-      }
-    }
-
-    return result.toString();
+    return camelCaseWithOptions(input, new Options(false, true, null, null));
   }
 
   /**
-   * Converts a string to camel case using the specified characters as
-   * separators.
+   * Converts the input string to camel case with the specified separator characters.
    *
-   * This method takes a string as its argument, then returns a string of which
-   * the case style is camel case.
-   *
-   * This method targets only the upper and lower cases of ASCII alphabets for
-   * capitalization, and the characters specified as the second argument of
-   * this method are regarded as word separators and are eliminated.
-   *
-   * <pre>{@code
-   *     String camel = StringCase.camelCaseWithSep("foo-bar100%baz", "- ");
-   *     // => "fooBar100%Baz"
-   * }</pre>
-   *
-   * @param input  A string to be converted.
-   * @param seps  A string that consists of characters that are word
-   *   separators.
+   * @param input  The input string.
+   * @param seps  The symbol characters to be treated as separators.
    * @return  A string converted to camel case.
+   *
+   * @deprecated Should use CamelCaseWithOptions instead
    */
+  @Deprecated
   public static String camelCaseWithSep(String input, String seps) {
-    var result = new CodepointBuffer(input.length());
-
-    var sepChs = seps.codePoints().toArray();
-    Arrays.sort(sepChs);
-
-    enum ChIs {
-      FirstOfStr,
-      InFirstWord,
-      NextOfUpper,
-      NextOfMark,
-      Others,
-    }
-    var flag = ChIs.FirstOfStr;
-
-    for (int ch : input.codePoints().toArray()) {
-      if (Arrays.binarySearch(sepChs, ch) >= 0) {
-        if (flag != ChIs.FirstOfStr) {
-          flag = ChIs.NextOfMark;
-        }
-      } else if (Ascii.isUpperCase(ch)) {
-        switch (flag) {
-        case ChIs.FirstOfStr:
-        case ChIs.InFirstWord:
-          result.append(Ascii.toLowerCase(ch));
-          flag = ChIs.InFirstWord;
-          break;
-        case ChIs.NextOfUpper:
-          result.append(Ascii.toLowerCase(ch));
-          //flag = ChIs.NextOfUpper;
-          break;
-        default:
-          result.append(ch);
-          flag = ChIs.NextOfUpper;
-          break;
-        }
-      } else if (Ascii.isLowerCase(ch)) {
-        switch (flag) {
-        case ChIs.NextOfUpper:
-          int prev = result.last();
-          if (Ascii.isLowerCase(prev)) {
-            prev = Ascii.toUpperCase(prev);
-          }
-          result.replaceLast(prev, ch);
-          flag = ChIs.Others;
-          break;
-        case ChIs.NextOfMark:
-          result.append(Ascii.toUpperCase(ch));
-          flag = ChIs.NextOfUpper;
-          break;
-        default:
-          result.append(ch);
-          flag = ChIs.Others;
-          break;
-        }
-      } else {
-        result.append(ch);
-        flag = ChIs.NextOfMark;
-      }
-    }
-
-    return result.toString();
+    return camelCaseWithOptions(input, new Options(false, true, seps, null));
   }
 
   /**
-   * Converts a string to camel case using characters other than the specified
-   * characters as separators.
+   * Converts the input string to camel case with the specified characters to be kept.
    *
-   * This method takes a string as its argument, then returns a string of which
-   * the case style is camel case.
-   *
-   * This method targets only the upper and lower cases of ASCII alphabets for
-   * capitalization, and the characters other than the specified characters as
-   * the second argument of this method are regarded as word separators and
-   * are eliminated.
-   *
-   * <pre>{@code
-   *     String camel = StringCase.camelCaseWithKeep("foo-bar100%baz", "%");
-   *     // => "fooBar100%Baz"
-   * }</pre>
-   *
-   * @param input  A string to be converted.
-   * @param keeped  A string that consists of characters that are not word
-   *   separators.
+   * @param input  The input string.
+   * @param kept  The symbol characters not to be treated as separators.
    * @return  A string converted to camel case.
+   *
+   * @deprecated Should use CamelCaseWithOptions instead
    */
-  public static String camelCaseWithKeep(String input, String keeped) {
-    var result = new CodepointBuffer(input.length());
-
-    var keepChs = keeped.codePoints().toArray();
-    Arrays.sort(keepChs);
-
-    enum ChIs {
-      FirstOfStr,
-      InFirstWord,
-      NextOfUpper,
-      NextOfMark,
-      Others,
-    }
-    var flag = ChIs.FirstOfStr;
-
-    for (int ch : input.codePoints().toArray()) {
-      if (Ascii.isUpperCase(ch)) {
-        switch (flag) {
-        case ChIs.FirstOfStr:
-        case ChIs.InFirstWord:
-          result.append(Ascii.toLowerCase(ch));
-          flag = ChIs.InFirstWord;
-          break;
-        case ChIs.NextOfUpper:
-          result.append(Ascii.toLowerCase(ch));
-          //flag = ChIs.NextOfUpper;
-          break;
-        default:
-          result.append(ch);
-          flag = ChIs.NextOfUpper;
-          break;
-        }
-      } else if (Ascii.isLowerCase(ch)) {
-        switch (flag) {
-        case ChIs.NextOfUpper:
-          int prev = result.last();
-          if (Ascii.isLowerCase(prev)) {
-            prev = Ascii.toUpperCase(prev);
-          }
-          result.replaceLast(prev, ch);
-          flag = ChIs.Others;
-          break;
-        case ChIs.NextOfMark:
-          result.append(Ascii.toUpperCase(ch));
-          flag = ChIs.NextOfUpper;
-          break;
-        default:
-          result.append(ch);
-          flag = ChIs.Others;
-          break;
-        }
-      } else if (Ascii.isDigit(ch) || Arrays.binarySearch(keepChs, ch) >= 0 ) {
-        result.append(ch);
-        flag = ChIs.NextOfMark;
-      } else {
-        if (flag != ChIs.FirstOfStr) {
-          flag = ChIs.NextOfMark;
-        }
-      }
-    }
-
-    return result.toString();
+  @Deprecated
+  public static String camelCaseWithKeep(String input, String kept) {
+    return camelCaseWithOptions(input, new Options(false, true, null, kept));
   }
 
   /**
