@@ -41,7 +41,7 @@ public class Options {
    *   sequence of non-alphabetical characters as a word boundary.
    * @param separators  The symbol characters to be treated as word separators and removed from
    *   the result string.
-   * @param keep  The symbol characters tobe treated as word separators and kept in the result
+   * @param keep  The symbol characters to be treated as word separators and kept in the result
    *   string.
    */
   public Options(
