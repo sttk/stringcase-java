@@ -100,7 +100,7 @@ public class StringCase_CamelCaseTest {
 
       @Test
       void convertPascalCase() {
-        var opts = new Options(true, false, null, null);
+        var opts = new Options(true, false, "", "");
         var result = camelCaseWithOptions("AbcDefGHIjk", opts);
         assertThat(result).isEqualTo("abcDefGhIjk");
       }
@@ -186,7 +186,7 @@ public class StringCase_CamelCaseTest {
 
       @Test
       void convertPascalCase() {
-        var opts = new Options(false, true, null, null);
+        var opts = new Options(false, true, "", "");
         var result = camelCaseWithOptions("AbcDefGHIjk", opts);
         assertThat(result).isEqualTo("abcDefGhIjk");
       }
@@ -272,7 +272,7 @@ public class StringCase_CamelCaseTest {
 
       @Test
       void convertPascalCase() {
-        var opts = new Options(true, true, null, null);
+        var opts = new Options(true, true, "", "");
         var result = camelCaseWithOptions("AbcDefGHIjk", opts);
         assertThat(result).isEqualTo("abcDefGhIjk");
       }
@@ -358,7 +358,7 @@ public class StringCase_CamelCaseTest {
 
       @Test
       void convertPascalCase() {
-        var opts = new Options(false, false, null, null);
+        var opts = new Options(false, false, "", "");
         var result = camelCaseWithOptions("AbcDefGHIjk", opts);
         assertThat(result).isEqualTo("abcDefGhIjk");
       }
@@ -444,7 +444,7 @@ public class StringCase_CamelCaseTest {
 
       @Test
       void convertPascalCase() {
-        var opts = new Options(true, false, "-_", null);
+        var opts = new Options(true, false, "-_", "");
         var result = camelCaseWithOptions("AbcDefGHIjk", opts);
         assertThat(result).isEqualTo("abcDefGhIjk");
       }
@@ -561,7 +561,7 @@ public class StringCase_CamelCaseTest {
 
       @Test
       void convertPascalCase() {
-        var opts = new Options(false, true, "-_", null);
+        var opts = new Options(false, true, "-_", "");
         var result = camelCaseWithOptions("AbcDefGHIjk", opts);
         assertThat(result).isEqualTo("abcDefGhIjk");
       }
@@ -678,7 +678,7 @@ public class StringCase_CamelCaseTest {
 
       @Test
       void convertPascalCase() {
-        var opts = new Options(true, true, "-_", null);
+        var opts = new Options(true, true, "-_", "");
         var result = camelCaseWithOptions("AbcDefGHIjk", opts);
         assertThat(result).isEqualTo("abcDefGhIjk");
       }
@@ -686,74 +686,74 @@ public class StringCase_CamelCaseTest {
       @Test
       void convertSnakeCase() {
         var opts = new Options(true, true, "_", null);
-        var result = camelCaseWithOptions("", opts);
-        assertThat(result).isEqualTo("");
+        var result = camelCaseWithOptions("abc_def_ghi", opts);
+        assertThat(result).isEqualTo("abcDefGhi");
 
         opts = new Options(true, true, "-", null);
-        result = camelCaseWithOptions("", opts);
-        assertThat(result).isEqualTo("");
+        result = camelCaseWithOptions("abc_def_ghi", opts);
+        assertThat(result).isEqualTo("abc_Def_Ghi");
       }
 
       @Test
       void convertKebabCase() {
         var opts = new Options(true, true, "-", null);
-        var result = camelCaseWithOptions("", opts);
-        assertThat(result).isEqualTo("");
+        var result = camelCaseWithOptions("abc-def-ghi", opts);
+        assertThat(result).isEqualTo("abcDefGhi");
 
         opts = new Options(true, true, "_", null);
-        result = camelCaseWithOptions("", opts);
-        assertThat(result).isEqualTo("");
+        result = camelCaseWithOptions("abc-def-ghi", opts);
+        assertThat(result).isEqualTo("abc-Def-Ghi");
       }
 
       @Test
       void convertTrainCase() {
         var opts = new Options(true, true, "-", null);
-        var result = camelCaseWithOptions("", opts);
-        assertThat(result).isEqualTo("");
+        var result = camelCaseWithOptions("Abc-Def-Ghi", opts);
+        assertThat(result).isEqualTo("abcDefGhi");
 
         opts = new Options(true, true, "_", null);
-        result = camelCaseWithOptions("", opts);
-        assertThat(result).isEqualTo("");
+        result = camelCaseWithOptions("Abc-Def-Ghi", opts);
+        assertThat(result).isEqualTo("abc-Def-Ghi");
       }
 
       @Test
       void convertMacroCase() {
         var opts = new Options(true, true, "_", null);
-        var result = camelCaseWithOptions("", opts);
-        assertThat(result).isEqualTo("");
+        var result = camelCaseWithOptions("ABC_DEF_GHI", opts);
+        assertThat(result).isEqualTo("abcDefGhi");
 
         opts = new Options(true, true, "-", null);
-        result = camelCaseWithOptions("", opts);
-        assertThat(result).isEqualTo("");
+        result = camelCaseWithOptions("ABC_DEF_GHI", opts);
+        assertThat(result).isEqualTo("abc_Def_Ghi");
       }
 
       @Test
       void convertCobolCase() {
         var opts = new Options(true, true, "-", null);
-        var result = camelCaseWithOptions("", opts);
-        assertThat(result).isEqualTo("");
+        var result = camelCaseWithOptions("ABC-DEF-GHI", opts);
+        assertThat(result).isEqualTo("abcDefGhi");
 
         opts = new Options(true, true, "_", null);
-        result = camelCaseWithOptions("", opts);
-        assertThat(result).isEqualTo("");
+        result = camelCaseWithOptions("ABC-DEF-GHI", opts);
+        assertThat(result).isEqualTo("abc-Def-Ghi");
       }
 
       @Test
       void convertWithKeepingDigits() {
         var opts = new Options(true, true, "-", null);
-        var result = camelCaseWithOptions("", opts);
-        assertThat(result).isEqualTo("");
+        var result = camelCaseWithOptions("abc123-456defG89HIJklMN12", opts);
+        assertThat(result).isEqualTo("abc123456DefG89HiJklMn12");
 
         opts = new Options(true, true, "_", null);
-        result = camelCaseWithOptions("", opts);
-        assertThat(result).isEqualTo("");
+        result = camelCaseWithOptions("abc123-456defG89HIJklMN12", opts);
+        assertThat(result).isEqualTo("abc123-456DefG89HiJklMn12");
       }
 
       @Test
       void convertWithSymbolsAsSeparators() {
         var opts = new Options(true, true, ":@$&()/", null);
-        var result = camelCaseWithOptions("", opts);
-        assertThat(result).isEqualTo("");
+        var result = camelCaseWithOptions(":.abc~!@def#$ghi%&jk(lm)no/?", opts);
+        assertThat(result).isEqualTo(".Abc~!Def#Ghi%JkLmNo?");
       }
 
       @Test
@@ -795,7 +795,7 @@ public class StringCase_CamelCaseTest {
 
       @Test
       void convertPascalCase() {
-        var opts = new Options(false, false, "-_", null);
+        var opts = new Options(false, false, "-_", "");
         var result = camelCaseWithOptions("AbcDefGHIjk", opts);
         assertThat(result).isEqualTo("abcDefGhIjk");
       }
@@ -912,7 +912,7 @@ public class StringCase_CamelCaseTest {
 
       @Test
       void convertPascalCase() {
-        var opts = new Options(true, false, null, "-_");
+        var opts = new Options(true, false, "", "-_");
         var result = camelCaseWithOptions("AbcDefGHIjk", opts);
         assertThat(result).isEqualTo("abcDefGhIjk");
       }
@@ -1022,7 +1022,7 @@ public class StringCase_CamelCaseTest {
 
       @Test
       void convertPascalCase() {
-        var opts = new Options(false, true, null, "-_");
+        var opts = new Options(false, true, "", "-_");
         var result = camelCaseWithOptions("AbcDefGHIjk", opts);
         assertThat(result).isEqualTo("abcDefGhIjk");
       }
@@ -1132,7 +1132,7 @@ public class StringCase_CamelCaseTest {
 
       @Test
       void convertPascalCase() {
-        var opts = new Options(true, true, null, "-_");
+        var opts = new Options(true, true, "", "-_");
         var result = camelCaseWithOptions("AbcDefGHIjk", opts);
         assertThat(result).isEqualTo("abcDefGhIjk");
       }
@@ -1242,7 +1242,7 @@ public class StringCase_CamelCaseTest {
 
       @Test
       void convertPascalCase() {
-        var opts = new Options(false, false, null, "-_");
+        var opts = new Options(false, false, "", "-_");
         var result = camelCaseWithOptions("AbcDefGHIjk", opts);
         assertThat(result).isEqualTo("abcDefGhIjk");
       }
