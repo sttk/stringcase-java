@@ -130,7 +130,7 @@ public final class StringCase {
    * @param seps  The symbol characters to be treated as separators.
    * @return  A string converted to camel case.
    *
-   * @deprecated Should use CamelCaseWithOptions instead
+   * @deprecated Should use {@link #camelCaseWithOptions} instead
    */
   @Deprecated
   public static String camelCaseWithSep(String input, String seps) {
@@ -144,7 +144,7 @@ public final class StringCase {
    * @param kept  The symbol characters not to be treated as separators.
    * @return  A string converted to camel case.
    *
-   * @deprecated Should use CamelCaseWithOptions instead
+   * @deprecated Should use {@link camelCaseWithOptions} instead
    */
   @Deprecated
   public static String camelCaseWithKeep(String input, String kept) {
@@ -152,261 +152,134 @@ public final class StringCase {
   }
 
   /**
-   * Converts a string to cobol case.
+   * Converts the input string to cobol case with the specified options.
    *
-   * This method takes a string as its argument, then returns a string of which
-   * the case style is cobol case.
+   * @param input  The input string.
+   * @param opts  The options with specifies the ways of case conversion.
+   * @return  A string converted to cobol case.
+   */
+  public static String cobolCaseWithOptions(String input, Options opts) {
+    var result = new CodepointBuffer(input.length());
+
+    final int HYPHEN = 0x2d;
+
+    var flag = ChIs.FirstOfStr;
+
+    int[] sepChs = null;
+    if (opts.separators != null && !opts.separators.isEmpty()) {
+      sepChs = opts.separators.codePoints().toArray();
+      Arrays.sort(sepChs);
+    }
+
+    int[] keptChs = null;
+    if (opts.keep != null && !opts.keep.isEmpty()) {
+      keptChs = opts.keep.codePoints().toArray();
+      Arrays.sort(keptChs);
+    }
+
+    for (int ch : input.codePoints().toArray()) {
+      if (Ascii.isUpperCase(ch)) {
+        if (flag == ChIs.FirstOfStr) {
+          result.append(ch);
+          flag = ChIs.NextOfUpper;
+        } else if (flag == ChIs.NextOfUpper || flag == ChIs.NextOfContdUpper ||
+          (!opts.separateAfterNonAlphabets && flag == ChIs.NextOfKeptMark)) {
+          result.append(ch);
+          flag = ChIs.NextOfContdUpper;
+        } else {
+          result.append(HYPHEN, ch);
+          flag = ChIs.NextOfUpper;
+        }
+      } else if (Ascii.isLowerCase(ch)) {
+        if (flag == ChIs.NextOfContdUpper) {
+          int prev = result.last();
+          result.replaceLast(HYPHEN, prev, Ascii.toUpperCase(ch));
+        } else if (flag == ChIs.NextOfSepMark ||
+          (opts.separateAfterNonAlphabets && flag == ChIs.NextOfKeptMark)) {
+          result.append(HYPHEN, Ascii.toUpperCase(ch));
+        } else {
+          result.append(Ascii.toUpperCase(ch));
+        }
+        flag = ChIs.Others;
+      } else {
+        var isKeptChar = false;
+        if (Ascii.isDigit(ch)) {
+          isKeptChar = true;
+        } else if (sepChs != null) {
+          if (Arrays.binarySearch(sepChs, ch) < 0) {
+            isKeptChar = true;
+          }
+        } else if (keptChs != null) {
+          if (Arrays.binarySearch(keptChs, ch) >= 0) {
+            isKeptChar = true;
+          }
+        }
+
+        if (isKeptChar) {
+          if (opts.separateBeforeNonAlphabets) {
+            if (flag == ChIs.FirstOfStr || flag == ChIs.NextOfKeptMark) {
+              result.append(ch);
+            } else {
+              result.append(HYPHEN, ch);
+            }
+          } else {
+            if (flag != ChIs.NextOfSepMark) {
+              result.append(ch);
+            } else {
+              result.append(HYPHEN, ch);
+            }
+          }
+          flag = ChIs.NextOfKeptMark;
+        } else {
+          if (flag != ChIs.FirstOfStr) {
+            flag = ChIs.NextOfSepMark;
+          }
+        }
+      }
+    }
+
+    return result.toString();
+  }
+
+  /**
+   * Converts the input string to cobol case.
+   * <p>
+   * It treats the end of a sequence of non-alphabetical characters as a word boundary, but not
+   * the beginning.
    *
-   * This method targets the upper and lower cases of ASCII alphabets for
-   * capitalization, and all characters except ASCII alphabets and ASCII
-   * numbers  are replaced to hyphens as word separators.
-   *
-   * <pre>{@code
-   *     String cobol = StringCase.cobolCase("foo_bar_baz");
-   *     // => "FOO-BAR-BAZ"
-   * }</pre>
-   *
-   * @param input  A string to be converted.
+   * @param input  The input string.
    * @return  A string converted to cobol case.
    */
   public static String cobolCase(String input) {
-    var result = new CodepointBuffer(input.length() + input.length() / 2);
-
-    final int HYPHEN = 0x2d;
-
-    enum ChIs {
-      FirstOfStr,
-      NextOfUpper,
-      NextOfContdUpper,
-      NextOfSepMark,
-      NextOfKeepedMark,
-      Others,
-    }
-    var flag = ChIs.FirstOfStr;
-
-    for (int ch : input.codePoints().toArray()) {
-      if (Ascii.isUpperCase(ch)) {
-        switch (flag) {
-        case ChIs.FirstOfStr:
-          result.append(ch);
-          flag = ChIs.NextOfUpper;
-          break;
-        case ChIs.NextOfUpper:
-        case ChIs.NextOfContdUpper:
-          result.append(ch);
-          flag = ChIs.NextOfContdUpper;
-          break;
-        default:
-          result.append(HYPHEN, ch);
-          flag = ChIs.NextOfUpper;
-          break;
-        }
-      } else if (Ascii.isLowerCase(ch)) {
-        switch (flag) {
-        case ChIs.NextOfContdUpper:
-          int prev = result.last();
-          result.replaceLast(HYPHEN, prev, Ascii.toUpperCase(ch));
-          break;
-        case ChIs.NextOfSepMark:
-        case ChIs.NextOfKeepedMark:
-          result.append(HYPHEN, Ascii.toUpperCase(ch));
-          break;
-        default:
-          result.append(Ascii.toUpperCase(ch));
-          break;
-        }
-        flag = ChIs.Others;
-      } else if (Ascii.isDigit(ch)) {
-        if (flag == ChIs.NextOfSepMark) {
-          result.append(HYPHEN, ch);
-        } else {
-          result.append(ch);
-        }
-        flag = ChIs.NextOfKeepedMark;
-      } else {
-        if (flag != ChIs.FirstOfStr) {
-          flag = ChIs.NextOfSepMark;
-        }
-      }
-    }
-
-    return result.toString();
+    return cobolCaseWithOptions(input, new Options(false, true, null, null));
   }
 
   /**
-   * Converts a string to cobol case using the specified characters as
-   * separators.
+   * Converts the input string to cobol case with the specified separator characters.
    *
-   * This method takes a string as its argument, then returns a string of which
-   * the case style is cobol case.
-   *
-   * This method targets only the upper and lower cases of ASCII alphabets for
-   * capitalization, and the characters specified as the second argument of
-   * this method are regarded as word separators and are replaced to hyphens.
-   *
-   * <pre>{@code
-   *     String cobol = StringCase.cobolCaseWithSep("foo-bar100%baz", "- ");
-   *     // => "FOO-BAR100%-BAZ"
-   * }</pre>
-   *
-   * @param input  A string to be converted.
-   * @param seps  A string that consists of characters that are word
-   *   separators.
+   * @param input  The input string.
+   * @param seps  The symbol characters to be treated as separators.
    * @return  A string converted to cobol case.
+   *
+   * @deprecated Should use {@link #cobolCaseWithOptions} instead
    */
+  @Deprecated
   public static String cobolCaseWithSep(String input, String seps) {
-    var result = new CodepointBuffer(input.length() + input.length() / 2);
-
-    final int HYPHEN = 0x2d;
-
-    var sepChs = seps.codePoints().toArray();
-    Arrays.sort(sepChs);
-
-    enum ChIs {
-      FirstOfStr,
-      NextOfUpper,
-      NextOfContdUpper,
-      NextOfSepMark,
-      NextOfKeepedMark,
-      Others,
-    }
-    var flag = ChIs.FirstOfStr;
-
-    for (int ch : input.codePoints().toArray()) {
-      if (Arrays.binarySearch(sepChs, ch) >= 0) {
-        if (flag != ChIs.FirstOfStr) {
-          flag = ChIs.NextOfSepMark;
-        }
-      } else if (Ascii.isUpperCase(ch)) {
-        switch (flag) {
-        case ChIs.FirstOfStr:
-          result.append(ch);
-          flag = ChIs.NextOfUpper;
-          break;
-        case ChIs.NextOfUpper:
-        case ChIs.NextOfContdUpper:
-          result.append(ch);
-          flag = ChIs.NextOfContdUpper;
-          break;
-        default:
-          result.append(HYPHEN, ch);
-          flag = ChIs.NextOfUpper;
-          break;
-        }
-      } else if (Ascii.isLowerCase(ch)) {
-        switch (flag) {
-        case ChIs.NextOfContdUpper:
-          int prev = result.last();
-          result.replaceLast(HYPHEN, prev, Ascii.toUpperCase(ch));
-          break;
-        case ChIs.NextOfSepMark:
-        case ChIs.NextOfKeepedMark:
-          result.append(HYPHEN, Ascii.toUpperCase(ch));
-          break;
-        default:
-          result.append(Ascii.toUpperCase(ch));
-          break;
-        }
-        flag = ChIs.Others;
-      } else {
-        if (flag == ChIs.NextOfSepMark) {
-          result.append(HYPHEN, ch);
-        } else {
-          result.append(ch);
-        }
-        flag = ChIs.NextOfKeepedMark;
-      }
-    }
-
-    return result.toString();
+    return cobolCaseWithOptions(input, new Options(false, true, seps, null));
   }
 
   /**
-   * Converts a string to cobol case using characters other than the specified
-   * characters as separators.
+   * Converts the input string to cobol case with the specified characters to be kept.
    *
-   * This method takes a string as its argument, then returns a string of which
-   * the case style is cobol case.
-   *
-   * This method targets only the upper and lower cases of ASCII alphabets
-   * for capitalization, and the characters other than the specified characters
-   * as the second argument of this method are regard as word separators and
-   * are replaced to hyphens.
-   *
-   * <pre>{@code
-   *     String cobol = StringCase.cobolCaseWithKeep("foo-bar100%baz", "%");
-   *     // => "FOO-BAR100%-BAZ"
-   * }</pre>
-   *
-   * @param input  A string to be converted.
-   * @param keeped  A string that consists of characters that are not word
-   *   separators.
+   * @param input  The input string.
+   * @param kept  The symbol characters not to be treated as separators.
    * @return  A string converted to cobol case.
+   *
+   * @deprecated Should use {@link #cobolCaseWithOptions} instead
    */
-  public static String cobolCaseWithKeep(String input, String keeped) {
-    var result = new CodepointBuffer(input.length() + input.length() / 2);
-
-    final int HYPHEN = 0x2d;
-
-    var keepChs = keeped.codePoints().toArray();
-    Arrays.sort(keepChs);
-
-    enum ChIs {
-      FirstOfStr,
-      NextOfUpper,
-      NextOfContdUpper,
-      NextOfSepMark,
-      NextOfKeepedMark,
-      Others,
-    }
-    var flag = ChIs.FirstOfStr;
-
-    for (int ch : input.codePoints().toArray()) {
-      if (Ascii.isUpperCase(ch)) {
-        switch (flag) {
-        case ChIs.FirstOfStr:
-          result.append(ch);
-          flag = ChIs.NextOfUpper;
-          break;
-        case ChIs.NextOfUpper:
-        case ChIs.NextOfContdUpper:
-          result.append(ch);
-          flag = ChIs.NextOfContdUpper;
-          break;
-        default:
-          result.append(HYPHEN, ch);
-          flag = ChIs.NextOfUpper;
-        }
-      } else if (Ascii.isLowerCase(ch)) {
-        switch (flag) {
-        case ChIs.NextOfContdUpper:
-          int prev = result.last();
-          result.replaceLast(HYPHEN, prev, Ascii.toUpperCase(ch));
-          break;
-        case ChIs.NextOfSepMark:
-        case ChIs.NextOfKeepedMark:
-          result.append(HYPHEN, Ascii.toUpperCase(ch));
-          break;
-        default:
-          result.append(Ascii.toUpperCase(ch));
-          break;
-        }
-        flag = ChIs.Others;
-      } else if (Ascii.isDigit(ch) || Arrays.binarySearch(keepChs, ch) >= 0) {
-        if (flag == ChIs.NextOfSepMark) {
-          result.append(HYPHEN, ch);
-        } else {
-          result.append(ch);
-        }
-        flag = ChIs.NextOfKeepedMark;
-      } else {
-        if (flag != ChIs.FirstOfStr) {
-          flag = ChIs.NextOfSepMark;
-        }
-      }
-    }
-
-    return result.toString();
+  @Deprecated
+  public static String cobolCaseWithKeep(String input, String kept) {
+    return cobolCaseWithOptions(input, new Options(false, true, null, kept));
   }
 
   /**
