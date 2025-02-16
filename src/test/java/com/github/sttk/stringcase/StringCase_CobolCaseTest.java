@@ -14,6 +14,7 @@ public class StringCase_CobolCaseTest {
 
   @Nested
   class CobolCase {
+    @Test
     void convertCamelCase() {
       var result = cobolCase("abcDefGHIjk");
       assertThat(result).isEqualTo("ABC-DEF-GH-IJK");
