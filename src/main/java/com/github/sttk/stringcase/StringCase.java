@@ -545,238 +545,122 @@ public final class StringCase {
   }
 
   /**
-   * Converts a string to pascal case.
+   * Converts the input string to pascal case with the specified options.
    *
-   * This method takes a string as its argument, then returns a string of which
-   * the case style is pascal case.
+   * @param input  The input string.
+   * @param opts  The options which specifies the ways of case conversion.
+   * @return  A string converted to pascal case.
+   */
+  public static String pascalCaseWithOptions(String input, Options opts) {
+    var result = new CodepointBuffer(input.length());
+
+    var flag = ChIs.FirstOfStr;
+
+    int[] sepChs = null;
+    if (opts.separators != null && !opts.separators.isEmpty()) {
+      sepChs = opts.separators.codePoints().toArray();
+      Arrays.sort(sepChs);
+    }
+
+    int[] keptChs = null;
+    if (opts.keep != null && !opts.keep.isEmpty()) {
+      keptChs = opts.keep.codePoints().toArray();
+      Arrays.sort(keptChs);
+    }
+
+    for (int ch : input.codePoints().toArray()) {
+      if (Ascii.isUpperCase(ch)) {
+        if (flag == ChIs.NextOfUpper || flag == ChIs.NextOfContdUpper ||
+          (!opts.separateAfterNonAlphabets && flag == ChIs.NextOfKeptMark)) {
+          result.append(Ascii.toLowerCase(ch));
+          flag = ChIs.NextOfContdUpper;
+        } else {
+          result.append(ch);
+          flag = ChIs.NextOfUpper;
+        }
+      } else if (Ascii.isLowerCase(ch)) {
+        if (flag == ChIs.FirstOfStr) {
+          result.append(Ascii.toUpperCase(ch));
+        } else if (flag == ChIs.NextOfContdUpper) {
+          int prev = result.last();
+          if (Ascii.isLowerCase(prev)) {
+            prev = Ascii.toUpperCase(prev);
+          }
+          result.replaceLast(prev, ch);
+        } else if (flag == ChIs.NextOfSepMark ||
+          (opts.separateAfterNonAlphabets && flag == ChIs.NextOfKeptMark)) {
+          result.append(Ascii.toUpperCase(ch));
+        } else {
+          result.append(ch);
+        }
+        flag = ChIs.Others;
+      } else {
+        var isKeptChar = false;
+        if (Ascii.isDigit(ch)) {
+          isKeptChar = true;
+        } else if (sepChs != null) {
+          if (Arrays.binarySearch(sepChs, ch) < 0) {
+            isKeptChar = true;
+          }
+        } else if (keptChs != null) {
+          if (Arrays.binarySearch(keptChs, ch) >= 0) {
+            isKeptChar = true;
+          }
+        }
+
+        if (isKeptChar) {
+          result.append(ch);
+          flag = ChIs.NextOfKeptMark;
+        } else {
+          if (flag != ChIs.FirstOfStr) {
+            flag = ChIs.NextOfSepMark;
+          }
+        }
+      }
+    }
+
+    return result.toString();
+  }
+
+  /**
+   * Converts the input string to pascal case.
+   * <p>
+   * It treats the end of a sequence of non-alphabetical characters as a word boundary, but not
+   * the beginning.
    *
-   * This method targets the upper and lower cases of ASCII alphabets for
-   * capitalization, and all characters except ASCII alphabets and ASCII
-   * numbers are eliminated as word separators.
-   *
-   * <pre>{@code
-   *     String pascal = StringCase.pascalCase("foo_bar_baz");
-   *     // => "FooBarBaz"
-   * }</pre>
-   *
-   * @param input  A string to be converted.
+   * @param input  The input string.
    * @return  A string converted to pascal case.
    */
   public static String pascalCase(String input) {
-    var result = new CodepointBuffer(input.length());
-
-    enum ChIs {
-      FirstOfStr,
-      NextOfUpper,
-      NextOfMark,
-      Others,
-    }
-    var flag = ChIs.FirstOfStr;
-
-    for (int ch : input.codePoints().toArray()) {
-      if (Ascii.isUpperCase(ch)) {
-        switch (flag) {
-        case ChIs.NextOfUpper:
-          result.append(Ascii.toLowerCase(ch));
-          //flag = ChIs.NextOfUpper;
-          break;
-        default:
-          result.append(ch);
-          flag = ChIs.NextOfUpper;
-          break;
-        }
-      } else if (Ascii.isLowerCase(ch)) {
-        switch (flag) {
-        case ChIs.NextOfUpper:
-          int prev = result.last();
-          if (Ascii.isLowerCase(prev)) {
-            prev = Ascii.toUpperCase(prev);
-          }
-          result.replaceLast(prev, ch);
-          flag = ChIs.Others;
-          break;
-        case ChIs.FirstOfStr:
-        case ChIs.NextOfMark:
-          result.append(Ascii.toUpperCase(ch));
-          flag = ChIs.NextOfUpper;
-          break;
-        default:
-          result.append(ch);
-          flag = ChIs.Others;
-          break;
-        }
-      } else if (Ascii.isDigit(ch)) {
-        result.append(ch);
-        flag = ChIs.NextOfMark;
-      } else {
-        if (flag != ChIs.FirstOfStr) {
-          flag = ChIs.NextOfMark;
-        }
-      }
-    }
-
-    return result.toString();
+    return pascalCaseWithOptions(input, new Options(false, true, null, null));
   }
 
   /**
-   * Converts a string to pascal case using the specified characters as
-   * separators.
+   * Converts the input string to pascal case with the specified separator characters.
    *
-   * This method takes a string as its argument, then returns a string of which
-   * the case style is pascal case.
-   *
-   * This method targets only the upper and lower cases of ASCII alphabets for
-   * capitalization, and the characters specified as the second argument of
-   * this method are regarded as word separators and are eliminated.
-   *
-   * <pre>{@code
-   *     String pascal = StringCase.pascalCaseWithSep("foo-Bar100%Baz", "- ");
-   *     // => "FooBar100%Baz"
-   * }</pre>
-   *
-   * @param input  A string to be converted.
-   * @param seps  A string that consists of characters that are word
-   *   separators.
+   * @param input  The input string.
+   * @param seps  The symbol characters to be treated as separators.
    * @return  A string converted to pascal case.
+   *
+   * @deprecated Should use {@link #pascalCaseWithOptions} instead
    */
+  @Deprecated
   public static String pascalCaseWithSep(String input, String seps) {
-    var result = new CodepointBuffer(input.length());
-
-    var sepChs = seps.codePoints().toArray();
-    Arrays.sort(sepChs);
-
-    enum ChIs {
-      FirstOfStr,
-      NextOfUpper,
-      NextOfMark,
-      Others,
-    }
-    var flag = ChIs.FirstOfStr;
-
-    for (int ch : input.codePoints().toArray()) {
-      if (Arrays.binarySearch(sepChs, ch) >= 0) {
-        if (flag != ChIs.FirstOfStr) {
-          flag = ChIs.NextOfMark;
-        }
-      } else if (Ascii.isUpperCase(ch)) {
-        switch (flag) {
-        case ChIs.NextOfUpper:
-          result.append(Ascii.toLowerCase(ch));
-          //flag = ChIs.NextOfUpper;
-          break;
-        default:
-          result.append(ch);
-          flag = ChIs.NextOfUpper;
-          break;
-        }
-      } else if (Ascii.isLowerCase(ch)) {
-        switch (flag) {
-        case ChIs.NextOfUpper:
-          int prev = result.last();
-          if (Ascii.isLowerCase(prev)) {
-            prev = Ascii.toUpperCase(prev);
-          }
-          result.replaceLast(prev, ch);
-          flag = ChIs.Others;
-          break;
-        case ChIs.FirstOfStr:
-        case ChIs.NextOfMark:
-          result.append(Ascii.toUpperCase(ch));
-          flag = ChIs.NextOfUpper;
-          break;
-        default:
-          result.append(ch);
-          flag = ChIs.Others;
-          break;
-        }
-      } else {
-        result.append(ch);
-        flag = ChIs.NextOfMark;
-      }
-    }
-
-    return result.toString();
+    return pascalCaseWithOptions(input, new Options(false, true, seps, null));
   }
 
   /**
-   * Converts a string to pascal case using characters other than the specified
-   * characters as separators.
+   * Converts the input string to pascal case with the specified characters to be kept.
    *
-   * This method takes a string as its argument, then returns a string of which
-   * the case style is pascal case.
-   *
-   * This method targets only the upper and lower cases of ASCII alphabets for
-   * capitalization, and the characters other than the specified characters as
-   * the second argument of this method are regarded as word separators and are
-   * eliminated.
-   *
-   * <pre>{@code
-   *     String pascal = StringCase.pascalCaseWithKeep("foo-bar100%baz", "%");
-   *     // => "FooBar100%Baz"
-   * }</pre>
-   *
-   * @param input  A string to be converted.
-   * @param keeped  A string that consists of characters that are not word
-   *   separators.
+   * @param input  The input string.
+   * @param kept  The symbol characters not to be treated as separators.
    * @return  A string converted to pascal case.
+   *
+   * @deprecated Should use {@link pascalCaseWithOptions} instead
    */
-  public static String pascalCaseWithKeep(String input, String keeped) {
-    var result = new CodepointBuffer(input.length());
-
-    var keepChs = keeped.codePoints().toArray();
-    Arrays.sort(keepChs);
-
-    enum ChIs {
-      FirstOfStr,
-      NextOfUpper,
-      NextOfMark,
-      Others,
-    }
-    var flag = ChIs.FirstOfStr;
-
-    for (int ch : input.codePoints().toArray()) {
-      if (Ascii.isUpperCase(ch)) {
-        switch (flag) {
-        case ChIs.NextOfUpper:
-          result.append(Ascii.toLowerCase(ch));
-          //flag = ChIs.NextOfUpper;
-          break;
-        default:
-          result.append(ch);
-          flag = ChIs.NextOfUpper;
-          break;
-        }
-      } else if (Ascii.isLowerCase(ch)) {
-        switch (flag) {
-        case ChIs.NextOfUpper:
-          int prev = result.last();
-          if (Ascii.isLowerCase(prev)) {
-            prev = Ascii.toUpperCase(prev);
-          }
-          result.replaceLast(prev, ch);
-          flag = ChIs.Others;
-          break;
-        case ChIs.FirstOfStr:
-        case ChIs.NextOfMark:
-          result.append(Ascii.toUpperCase(ch));
-          flag = ChIs.NextOfUpper;
-          break;
-        default:
-          result.append(ch);
-          flag = ChIs.Others;
-          break;
-        }
-      } else if (Ascii.isDigit(ch) || Arrays.binarySearch(keepChs, ch) >= 0) {
-        result.append(ch);
-        flag = ChIs.NextOfMark;
-      } else {
-        if (flag != ChIs.FirstOfStr) {
-          flag = ChIs.NextOfMark;
-        }
-      }
-    }
-
-    return result.toString();
+  @Deprecated
+  public static String pascalCaseWithKeep(String input, String kept) {
+    return pascalCaseWithOptions(input, new Options(false, true, null, kept));
   }
 
   /**
