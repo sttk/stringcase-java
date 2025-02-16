@@ -9,21 +9,21 @@ capitalization.
 All characters other than ASCII uppercase and lowercase letters and ASCII numbers are removed as
 word separators.
 
-If you want to use some symbols as separators, specify those symbols in the `Separators` field of
+If you want to use some symbols as separators, specify those symbols in the `separators` field of
 an `Options` instance and use the `〜CaseWithOptions` methods for the desired case.
 If you want to retain certain symbols and use everything else as separators, specify those symbols
-in `Keep` field of an `Options` instance and use the `〜CaseWithOptions` methods for the desired
+in `keep` field of an `Options` instance and use the `〜CaseWithOptions` methods for the desired
 case.
 
 Additionally, you can specify whether to place word boundaries before and/or after non-alphabetic
 characters with conversion options.
-This can be set using the `SeparateBeforeNonAlphabets` and `SeparateAfterNonAlphabets` fields in
+This can be set using the `separateBeforeNonAlphabets` and `separateAfterNonAlphabets` fields in
 the `Options` instance.
 
 The `〜Case` methods that do not take `Options` as an argument only place word boundaries after
 non-alphabetic characters.
 In other words, they behave as if
-`SeparateBeforeNonAlphabets = false` and `SeparateAfterNonAlphabets = true`.
+`separateBeforeNonAlphabets = false` and `separateAfterNonAlphabets = true`.
 
 ## Install
 
