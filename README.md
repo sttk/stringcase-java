@@ -1,6 +1,29 @@
 # [stringcase-java][repo-url] [![Maven Central][mvn-img]][mvn-url] [![GitHub.io][io-img]][io-url] [![CI Status][ci-img]][ci-url] [![MIT License][mit-img]][mit-url]
 
-A Java library for converting string cases between camelCase, COBOL-CASE, kebab-case, MACRO_CASE, PascalCase, snake_case and Train-Case.
+This library provides some static methods that convert string cases between
+camelCase, COBOL-CASE, kebab-case, MACRO_CASE, PascalCase, snake_case and
+Train-Case.
+
+Essentially, these static methods only target ASCII uppercase and lowercase letters for
+capitalization.
+All characters other than ASCII uppercase and lowercase letters and ASCII numbers are removed as
+word separators.
+
+If you want to use some symbols as separators, specify those symbols in the `Separators` field of
+an `Options` instance and use the `〜CaseWithOptions` methods for the desired case.
+If you want to retain certain symbols and use everything else as separators, specify those symbols
+in `Keep` field of an `Options` instance and use the `〜CaseWithOptions` methods for the desired
+case.
+
+Additionally, you can specify whether to place word boundaries before and/or after non-alphabetic
+characters with conversion options.
+This can be set using the `SeparateBeforeNonAlphabets` and `SeparateAfterNonAlphabets` fields in
+the `Options` instance.
+
+The `〜Case` methods that do not take `Options` as an argument only place word boundaries after
+non-alphabetic characters.
+In other words, they behave as if
+`SeparateBeforeNonAlphabets = false` and `SeparateAfterNonAlphabets = true`.
 
 ## Install
 
@@ -66,11 +89,12 @@ This framework supports JDK 21 or later.
 
 ### Actually checked JDK versions:
 
-- GraalVM CE 21.0.2+13.1 (openjdk version 21.0.2)
+- Oracle GraalVM 21.0.6+8.1 (java version "21.0.6" 2025-01-21 LTS)
+- Oracle GraalVM 23.0.2+7.1 (java version "23.0.2" 2025-01-21)
 
 ## License
 
-Copyright (C) 2024 Takayuki Sato
+Copyright (C) 2024-2025 Takayuki Sato
 
 This program is free software under MIT License.<br>
 See the file LICENSE in this distribution for more details.
