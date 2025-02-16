@@ -664,265 +664,134 @@ public final class StringCase {
   }
 
   /**
-   * Converts a string to snake case.
+   * Converts the input string to snake case with the specified options.
    *
-   * This method takes a string as its argument, then returns a string of which
-   * the case style is snake case.
+   * @param input  The input string.
+   * @param opts  The options with specifies the ways of case conversion.
+   * @return  A string converted to snake case.
+   */
+  public static String snakeCaseWithOptions(String input, Options opts) {
+    var result = new CodepointBuffer(input.length());
+
+    final int UNDERSCORE = 0x5f;
+
+    var flag = ChIs.FirstOfStr;
+
+    int[] sepChs = null;
+    if (opts.separators != null && !opts.separators.isEmpty()) {
+      sepChs = opts.separators.codePoints().toArray();
+      Arrays.sort(sepChs);
+    }
+
+    int[] keptChs = null;
+    if (opts.keep != null && !opts.keep.isEmpty()) {
+      keptChs = opts.keep.codePoints().toArray();
+      Arrays.sort(keptChs);
+    }
+
+    for (int ch : input.codePoints().toArray()) {
+      if (Ascii.isUpperCase(ch)) {
+        if (flag == ChIs.FirstOfStr) {
+          result.append(Ascii.toLowerCase(ch));
+          flag = ChIs.NextOfUpper;
+        } else if (flag == ChIs.NextOfUpper || flag == ChIs.NextOfContdUpper ||
+          (!opts.separateAfterNonAlphabets && flag == ChIs.NextOfKeptMark)) {
+          result.append(Ascii.toLowerCase(ch));
+          flag = ChIs.NextOfContdUpper;
+        } else {
+          result.append(UNDERSCORE, Ascii.toLowerCase(ch));
+          flag = ChIs.NextOfUpper;
+        }
+      } else if (Ascii.isLowerCase(ch)) {
+        if (flag == ChIs.NextOfContdUpper) {
+          int prev = result.last();
+          result.replaceLast(UNDERSCORE, prev, ch);
+        } else if (flag == ChIs.NextOfSepMark ||
+          (opts.separateAfterNonAlphabets && flag == ChIs.NextOfKeptMark)) {
+          result.append(UNDERSCORE, ch);
+        } else {
+          result.append(ch);
+        }
+        flag = ChIs.Others;
+      } else {
+        var isKeptChar = false;
+        if (Ascii.isDigit(ch)) {
+          isKeptChar = true;
+        } else if (sepChs != null) {
+          if (Arrays.binarySearch(sepChs, ch) < 0) {
+            isKeptChar = true;
+          }
+        } else if (keptChs != null) {
+          if (Arrays.binarySearch(keptChs, ch) >= 0) {
+            isKeptChar = true;
+          }
+        }
+
+        if (isKeptChar) {
+          if (opts.separateBeforeNonAlphabets) {
+            if (flag == ChIs.FirstOfStr || flag == ChIs.NextOfKeptMark) {
+              result.append(ch);
+            } else {
+              result.append(UNDERSCORE, ch);
+            }
+          } else {
+            if (flag != ChIs.NextOfSepMark) {
+              result.append(ch);
+            } else {
+              result.append(UNDERSCORE, ch);
+            }
+          }
+          flag = ChIs.NextOfKeptMark;
+        } else {
+          if (flag != ChIs.FirstOfStr) {
+            flag = ChIs.NextOfSepMark;
+          }
+        }
+      }
+    }
+
+    return result.toString();
+  }
+
+  /**
+   * Converts the input string to snake case.
+   * <p>
+   * It treats the end of a sequence of non-alphabetical characters as a word boundary, but not
+   * the beginning.
    *
-   * This method targets the upper and lower cases of ASCII alphabets for
-   * capitalization, and all characters except ASCII alphabets and ASCII
-   * numbers are eliminated as word separators.
-   *
-   * <pre>{@code
-   *     String snake = StringCase.snakeCase("fooBarBaz");
-   *     // => "foo_bar_baz"
-   * }</pre>
-   *
-   * @param input  A string to be converted.
+   * @param input  The input string.
    * @return  A string converted to snake case.
    */
   public static String snakeCase(String input) {
-    var result = new CodepointBuffer(input.length() + input.length() / 2);
-
-    final int UNDERSCORE = 0x5f;
-
-    enum ChIs {
-      FirstOfStr,
-      NextOfUpper,
-      NextOfContdUpper,
-      NextOfSepMark,
-      NextOfKeepedMark,
-      Others,
-    }
-    var flag = ChIs.FirstOfStr;
-
-    for (int ch : input.codePoints().toArray()) {
-      if (Ascii.isUpperCase(ch)) {
-        switch (flag) {
-        case ChIs.FirstOfStr:
-          result.append(Ascii.toLowerCase(ch));
-          flag = ChIs.NextOfUpper;
-          break;
-        case ChIs.NextOfUpper:
-        case ChIs.NextOfContdUpper:
-          result.append(Ascii.toLowerCase(ch));
-          flag = ChIs.NextOfContdUpper;
-          break;
-        default:
-          result.append(UNDERSCORE, Ascii.toLowerCase(ch));
-          flag = ChIs.NextOfUpper;
-          break;
-        }
-      } else if (Ascii.isLowerCase(ch)) {
-        switch (flag) {
-        case ChIs.NextOfContdUpper:
-          int prev = result.last();
-          result.replaceLast(UNDERSCORE, prev, ch);
-          break;
-        case ChIs.NextOfSepMark:
-        case ChIs.NextOfKeepedMark:
-          result.append(UNDERSCORE, ch);
-          break;
-        default:
-          result.append(ch);
-          break;
-        }
-        flag = ChIs.Others;
-      } else if (Ascii.isDigit(ch)) {
-        switch (flag) {
-        case ChIs.NextOfSepMark:
-          result.append(UNDERSCORE, ch);
-          break;
-        default:
-          result.append(ch);
-          break;
-        }
-        flag = ChIs.NextOfKeepedMark;
-      } else {
-        if (flag != ChIs.FirstOfStr) {
-          flag = ChIs.NextOfSepMark;
-        }
-      }
-    }
-
-    return result.toString();
+    return snakeCaseWithOptions(input, new Options(false, true, null, null));
   }
 
   /**
-   * Converts a string to snake case using the specified characters as
-   * separators.
+   * Converts the input string to snake case with the specified separator characters.
    *
-   * This method takes a string as its argument, then returns a strin` of which
-   * the case style is snake case.
-   *
-   * This method targets only the upper and lower cases of ASCII alphabets for
-   * capitalization, and the characters specified as the second argument of
-   * this method are regarded as word separators and are replaced to
-   * underscores.
-   *
-   * <pre>{@code
-   *     String snake = StringCase.snakeCaseWithSep("foo-Bar100%Baz", "- ");
-   *     // => "foo_bar100%_baz"
-   * }</pre>
-   *
-   * @param input  A string to be converted.
-   * @param seps  A string that consists of characters that are word
-   *   separators.
+   * @param input  The input string.
+   * @param seps  The symbol characters to be treated as separators.
    * @return  A string converted to snake case.
+   *
+   * @deprecated Should use {@link #snakeCaseWithOptions} instead
    */
+  @Deprecated
   public static String snakeCaseWithSep(String input, String seps) {
-    var result = new CodepointBuffer(input.length() + input.length()  / 2);
-
-    final int UNDERSCORE = 0x5f;
-
-    var sepChs = seps.codePoints().toArray();
-    Arrays.sort(sepChs);
-
-    enum ChIs {
-      FirstOfStr,
-      NextOfUpper,
-      NextOfContdUpper,
-      NextOfSepMark,
-      NextOfKeepedMark,
-      Others,
-    }
-    var flag = ChIs.FirstOfStr;
-
-    for (int ch : input.codePoints().toArray()) {
-      if (Arrays.binarySearch(sepChs, ch) >= 0) {
-        if (flag != ChIs.FirstOfStr) {
-          flag = ChIs.NextOfSepMark;
-        }
-      } else if (Ascii.isUpperCase(ch)) {
-        switch (flag) {
-        case ChIs.FirstOfStr:
-          result.append(Ascii.toLowerCase(ch));
-          flag = ChIs.NextOfUpper;
-          break;
-        case ChIs.NextOfUpper:
-        case ChIs.NextOfContdUpper:
-          result.append(Ascii.toLowerCase(ch));
-          flag = ChIs.NextOfContdUpper;
-          break;
-        default:
-          result.append(UNDERSCORE, Ascii.toLowerCase(ch));
-          flag = ChIs.NextOfUpper;
-          break;
-        }
-      } else if (Ascii.isLowerCase(ch)) {
-        switch (flag) {
-        case ChIs.NextOfContdUpper:
-          int prev = result.last();
-          result.replaceLast(UNDERSCORE, prev, ch);
-          break;
-        case ChIs.NextOfSepMark:
-        case ChIs.NextOfKeepedMark:
-          result.append(UNDERSCORE, ch);
-          break;
-        default:
-          result.append(ch);
-          break;
-        }
-        flag = ChIs.Others;
-      } else {
-        if (flag == ChIs.NextOfSepMark) {
-          result.append(UNDERSCORE, ch);
-        } else {
-          result.append(ch);
-        }
-        flag = ChIs.NextOfKeepedMark;
-      }
-    }
-
-    return result.toString();
+    return snakeCaseWithOptions(input, new Options(false, true, seps, null));
   }
 
   /**
-   * Converts a string to snake case using characters other than the specified
-   * characters as separators.
-   * 
-   * This method takes a string as its argument, then returns a string of which
-   * the case style is snake case.
+   * Converts the input string to snake case with the specified characters to be kept.
    *
-   * This method targets only the upper and lower cases of ASCII alphabets for
-   * capitalization, and the characters other than the specified characters as
-   * the second argument of this method are regarded as word separators and are
-   * replaced to underscores.
-   *
-   * <pre>{@code
-   *     let snake = stringcase::snake_case_with_keep("foo-bar100%baz", "%");
-   *     // => "foo_bar100%_baz"
-   * }</pre>
-   *
-   * @param input  A string to be converted.
-   * @param keeped  A string that consists of characters that are not word
-   *   separators.
+   * @param input  The input string.
+   * @param kept  The symbol characters not to be treated as separators.
    * @return  A string converted to snake case.
+   *
+   * @deprecated Should use {@link #snakeCaseWithOptions} instead
    */
-  public static String snakeCaseWithKeep(String input, String keeped) {
-    var result = new CodepointBuffer(input.length() + input.length()  / 2);
-
-    final int UNDERSCORE = 0x5f;
-
-    var keepChs = keeped.codePoints().toArray();
-    Arrays.sort(keepChs);
-
-    enum ChIs {
-      FirstOfStr,
-      NextOfUpper,
-      NextOfContdUpper,
-      NextOfSepMark,
-      NextOfKeepedMark,
-      Others,
-    }
-    var flag = ChIs.FirstOfStr;
-
-    for (int ch : input.codePoints().toArray()) {
-      if (Ascii.isUpperCase(ch)) {
-        switch (flag) {
-        case ChIs.FirstOfStr:
-          result.append(Ascii.toLowerCase(ch));
-          flag = ChIs.NextOfUpper;
-          break;
-        case ChIs.NextOfUpper:
-        case ChIs.NextOfContdUpper:
-          result.append(Ascii.toLowerCase(ch));
-          flag = ChIs.NextOfContdUpper;
-          break;
-        default:
-          result.append(UNDERSCORE, Ascii.toLowerCase(ch));
-          flag = ChIs.NextOfUpper;
-        }
-      } else if (Ascii.isLowerCase(ch)) {
-        switch (flag) {
-        case ChIs.NextOfContdUpper:
-          int prev = result.last();
-          result.replaceLast(UNDERSCORE, prev, ch);
-          break;
-        case ChIs.NextOfSepMark:
-        case ChIs.NextOfKeepedMark:
-          result.append(UNDERSCORE, ch);
-          break;
-        default:
-          result.append(ch);
-          break;
-        }
-        flag = ChIs.Others;
-      } else if (Ascii.isDigit(ch) || Arrays.binarySearch(keepChs, ch) >= 0) {
-        if (flag == ChIs.NextOfSepMark) {
-          result.append(UNDERSCORE, ch);
-        } else {
-          result.append(ch);
-        }
-        flag = ChIs.NextOfKeepedMark;
-      } else {
-        if (flag != ChIs.FirstOfStr) {
-          flag = ChIs.NextOfSepMark;
-        }
-      }
-    }
-
-    return result.toString();
+  @Deprecated
+  public static String snakeCaseWithKeep(String input, String kept) {
+    return snakeCaseWithOptions(input, new Options(false, true, null, kept));
   }
 
   /**
