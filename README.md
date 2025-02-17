@@ -39,7 +39,7 @@ Maven `pom.xml` and Gradle `build.gradle` are as follows:
     <dependency>
       <groupId>io.github.sttk</groupId>
       <artifactId>stringcase</artifactId>
-      <version>0.1.0</version>
+      <version>0.2.0</version>
     </dependency>
   </dependencies>
 ```
@@ -51,7 +51,7 @@ repositories {
   mavenCentral()
 }
 dependencies {
-  implementation 'io.github.sttk:stringcase:0.1.0'
+  implementation 'io.github.sttk:stringcase:0.2.0'
 }
 ```
 
@@ -101,8 +101,8 @@ See the file LICENSE in this distribution for more details.
 
 
 [repo-url]: https://github.com/sttk/stringcase-java
-[mvn-img]: https://img.shields.io/badge/maven_central-0.1.0-276bdd.svg
-[mvn-url]: https://central.sonatype.com/artifact/io.github.sttk/stringcase/0.1.0
+[mvn-img]: https://img.shields.io/badge/maven_central-0.2.0-276bdd.svg
+[mvn-url]: https://central.sonatype.com/artifact/io.github.sttk/stringcase/0.2.0
 [io-img]: https://img.shields.io/badge/github.io-Javadoc-4d7a97.svg
 [io-url]: https://sttk.github.io/stringcase-java/
 [ci-img]: https://github.com/sttk/stringcase-java/actions/workflows/java-ci.yml/badge.svg?branch=main
