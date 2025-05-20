@@ -144,7 +144,7 @@ public final class StringCase {
    * @param kept  The symbol characters not to be treated as separators.
    * @return  A string converted to camel case.
    *
-   * @deprecated Should use {@link camelCaseWithOptions} instead
+   * @deprecated Should use {@link #camelCaseWithOptions} instead
    */
   @Deprecated
   public static String camelCaseWithKeep(String input, String kept) {
@@ -656,7 +656,7 @@ public final class StringCase {
    * @param kept  The symbol characters not to be treated as separators.
    * @return  A string converted to pascal case.
    *
-   * @deprecated Should use {@link pascalCaseWithOptions} instead
+   * @deprecated Should use {@link #pascalCaseWithOptions} instead
    */
   @Deprecated
   public static String pascalCaseWithKeep(String input, String kept) {
