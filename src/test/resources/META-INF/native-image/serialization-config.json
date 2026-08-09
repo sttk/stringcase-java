@@ -1,0 +1,11 @@
+{
+  "types":[
+    {
+      "name": "org.junit.platform.engine.UniqueId$SerializedForm"
+    }
+  ],
+  "lambdaCapturingTypes":[
+  ],
+  "proxies":[
+  ]
+}
