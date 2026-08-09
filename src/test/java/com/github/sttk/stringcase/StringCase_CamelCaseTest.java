@@ -1,13 +1,10 @@
 package com.github.sttk.stringcase;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.fail;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Nested;
-
 import static com.github.sttk.stringcase.StringCase.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import static java.lang.Character.codePointAt;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("missing-explicit-ctor")
 public class StringCase_CamelCaseTest {
@@ -64,26 +61,26 @@ public class StringCase_CamelCaseTest {
 
     @Test
     void convertWithSymbolsAsSeparators() {
-   		var result = camelCase(":.abc~!@def#$ghi%&jk(lm)no/?");
-  		assertThat(result).isEqualTo("abcDefGhiJkLmNo");
+      var result = camelCase(":.abc~!@def#$ghi%&jk(lm)no/?");
+      assertThat(result).isEqualTo("abcDefGhiJkLmNo");
     }
 
     @Test
     void convertWhenStartingWithDigit() {
-		  var result = camelCase("123abc456def");
-		  assertThat(result).isEqualTo("123Abc456Def");
+      var result = camelCase("123abc456def");
+      assertThat(result).isEqualTo("123Abc456Def");
 
-		  result = camelCase("123ABC456DEF");
-		  assertThat(result).isEqualTo("123Abc456Def");
+      result = camelCase("123ABC456DEF");
+      assertThat(result).isEqualTo("123Abc456Def");
 
-		  result = camelCase("123Abc456Def");
-		  assertThat(result).isEqualTo("123Abc456Def");
+      result = camelCase("123Abc456Def");
+      assertThat(result).isEqualTo("123Abc456Def");
     }
 
     @Test
     void convertAnEmptyString() {
-		  var result = camelCase("");
-		  assertThat(result).isEqualTo("");
+      var result = camelCase("");
+      assertThat(result).isEqualTo("");
     }
   }
 

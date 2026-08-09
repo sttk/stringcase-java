@@ -11,13 +11,7 @@ import java.util.Arrays;
 /**
  * Is the class that provides the static methods to convert a string to following cases.
  *
- * - camelCase
- * - COBOL-CASE
- * - kebab-case
- * - MACRO_CASE
- * - PascalCase
- * - snake_case
- * - Train-Case
+ * <p>- camelCase - COBOL-CASE - kebab-case - MACRO_CASE - PascalCase - snake_case - Train-Case
  */
 public final class StringCase {
   private StringCase() {}
@@ -34,9 +28,9 @@ public final class StringCase {
   /**
    * Converts the input string to camel case with the specified options.
    *
-   * @param input  The input string.
-   * @param opts  The options which specifies the ways of case conversion.
-   * @return  A string converted to camel case.
+   * @param input The input string.
+   * @param opts The options which specifies the ways of case conversion.
+   * @return A string converted to camel case.
    */
   public static String camelCaseWithOptions(String input, Options opts) {
     var result = new CodepointBuffer(input.length());
@@ -60,8 +54,9 @@ public final class StringCase {
         if (flag == ChIs.FirstOfStr) {
           result.append(Ascii.toLowerCase(ch));
           flag = ChIs.NextOfUpper;
-        } else if (flag == ChIs.NextOfUpper || flag == ChIs.NextOfContdUpper ||
-          (!opts.separateAfterNonAlphabets && flag == ChIs.NextOfKeptMark)) {
+        } else if (flag == ChIs.NextOfUpper
+            || flag == ChIs.NextOfContdUpper
+            || (!opts.separateAfterNonAlphabets && flag == ChIs.NextOfKeptMark)) {
           result.append(Ascii.toLowerCase(ch));
           flag = ChIs.NextOfContdUpper;
         } else {
@@ -75,8 +70,8 @@ public final class StringCase {
             prev = Ascii.toUpperCase(prev);
           }
           result.replaceLast(prev, ch);
-        } else if (flag == ChIs.NextOfSepMark ||
-          (opts.separateAfterNonAlphabets && flag == ChIs.NextOfKeptMark)) {
+        } else if (flag == ChIs.NextOfSepMark
+            || (opts.separateAfterNonAlphabets && flag == ChIs.NextOfKeptMark)) {
           result.append(Ascii.toUpperCase(ch));
         } else {
           result.append(ch);
@@ -112,12 +107,12 @@ public final class StringCase {
 
   /**
    * Converts the input string to camel case.
-   * <p>
-   * It treats the end of a sequence of non-alphabetical characters as a word boundary, but not
+   *
+   * <p>It treats the end of a sequence of non-alphabetical characters as a word boundary, but not
    * the beginning.
    *
-   * @param input  The input string.
-   * @return  A string converted to camel case.
+   * @param input The input string.
+   * @return A string converted to camel case.
    */
   public static String camelCase(String input) {
     return camelCaseWithOptions(input, new Options(false, true, null, null));
@@ -126,10 +121,9 @@ public final class StringCase {
   /**
    * Converts the input string to camel case with the specified separator characters.
    *
-   * @param input  The input string.
-   * @param seps  The symbol characters to be treated as separators.
-   * @return  A string converted to camel case.
-   *
+   * @param input The input string.
+   * @param seps The symbol characters to be treated as separators.
+   * @return A string converted to camel case.
    * @deprecated Should use {@link #camelCaseWithOptions} instead
    */
   @Deprecated
@@ -140,10 +134,9 @@ public final class StringCase {
   /**
    * Converts the input string to camel case with the specified characters to be kept.
    *
-   * @param input  The input string.
-   * @param kept  The symbol characters not to be treated as separators.
-   * @return  A string converted to camel case.
-   *
+   * @param input The input string.
+   * @param kept The symbol characters not to be treated as separators.
+   * @return A string converted to camel case.
    * @deprecated Should use {@link #camelCaseWithOptions} instead
    */
   @Deprecated
@@ -154,9 +147,9 @@ public final class StringCase {
   /**
    * Converts the input string to cobol case with the specified options.
    *
-   * @param input  The input string.
-   * @param opts  The options with specifies the ways of case conversion.
-   * @return  A string converted to cobol case.
+   * @param input The input string.
+   * @param opts The options with specifies the ways of case conversion.
+   * @return A string converted to cobol case.
    */
   public static String cobolCaseWithOptions(String input, Options opts) {
     var result = new CodepointBuffer(input.length());
@@ -182,8 +175,9 @@ public final class StringCase {
         if (flag == ChIs.FirstOfStr) {
           result.append(ch);
           flag = ChIs.NextOfUpper;
-        } else if (flag == ChIs.NextOfUpper || flag == ChIs.NextOfContdUpper ||
-          (!opts.separateAfterNonAlphabets && flag == ChIs.NextOfKeptMark)) {
+        } else if (flag == ChIs.NextOfUpper
+            || flag == ChIs.NextOfContdUpper
+            || (!opts.separateAfterNonAlphabets && flag == ChIs.NextOfKeptMark)) {
           result.append(ch);
           flag = ChIs.NextOfContdUpper;
         } else {
@@ -194,8 +188,8 @@ public final class StringCase {
         if (flag == ChIs.NextOfContdUpper) {
           int prev = result.last();
           result.replaceLast(HYPHEN, prev, Ascii.toUpperCase(ch));
-        } else if (flag == ChIs.NextOfSepMark ||
-          (opts.separateAfterNonAlphabets && flag == ChIs.NextOfKeptMark)) {
+        } else if (flag == ChIs.NextOfSepMark
+            || (opts.separateAfterNonAlphabets && flag == ChIs.NextOfKeptMark)) {
           result.append(HYPHEN, Ascii.toUpperCase(ch));
         } else {
           result.append(Ascii.toUpperCase(ch));
@@ -243,12 +237,12 @@ public final class StringCase {
 
   /**
    * Converts the input string to cobol case.
-   * <p>
-   * It treats the end of a sequence of non-alphabetical characters as a word boundary, but not
+   *
+   * <p>It treats the end of a sequence of non-alphabetical characters as a word boundary, but not
    * the beginning.
    *
-   * @param input  The input string.
-   * @return  A string converted to cobol case.
+   * @param input The input string.
+   * @return A string converted to cobol case.
    */
   public static String cobolCase(String input) {
     return cobolCaseWithOptions(input, new Options(false, true, null, null));
@@ -257,10 +251,9 @@ public final class StringCase {
   /**
    * Converts the input string to cobol case with the specified separator characters.
    *
-   * @param input  The input string.
-   * @param seps  The symbol characters to be treated as separators.
-   * @return  A string converted to cobol case.
-   *
+   * @param input The input string.
+   * @param seps The symbol characters to be treated as separators.
+   * @return A string converted to cobol case.
    * @deprecated Should use {@link #cobolCaseWithOptions} instead
    */
   @Deprecated
@@ -271,10 +264,9 @@ public final class StringCase {
   /**
    * Converts the input string to cobol case with the specified characters to be kept.
    *
-   * @param input  The input string.
-   * @param kept  The symbol characters not to be treated as separators.
-   * @return  A string converted to cobol case.
-   *
+   * @param input The input string.
+   * @param kept The symbol characters not to be treated as separators.
+   * @return A string converted to cobol case.
    * @deprecated Should use {@link #cobolCaseWithOptions} instead
    */
   @Deprecated
@@ -285,9 +277,9 @@ public final class StringCase {
   /**
    * Converts the input string to kebab case with the specified options.
    *
-   * @param input  The input string.
-   * @param opts  The options with specifies the ways of case conversion.
-   * @return  A string converted to kebab case.
+   * @param input The input string.
+   * @param opts The options with specifies the ways of case conversion.
+   * @return A string converted to kebab case.
    */
   public static String kebabCaseWithOptions(String input, Options opts) {
     var result = new CodepointBuffer(input.length());
@@ -313,8 +305,9 @@ public final class StringCase {
         if (flag == ChIs.FirstOfStr) {
           result.append(Ascii.toLowerCase(ch));
           flag = ChIs.NextOfUpper;
-        } else if (flag == ChIs.NextOfUpper || flag == ChIs.NextOfContdUpper ||
-          (!opts.separateAfterNonAlphabets && flag == ChIs.NextOfKeptMark)) {
+        } else if (flag == ChIs.NextOfUpper
+            || flag == ChIs.NextOfContdUpper
+            || (!opts.separateAfterNonAlphabets && flag == ChIs.NextOfKeptMark)) {
           result.append(Ascii.toLowerCase(ch));
           flag = ChIs.NextOfContdUpper;
         } else {
@@ -325,8 +318,8 @@ public final class StringCase {
         if (flag == ChIs.NextOfContdUpper) {
           int prev = result.last();
           result.replaceLast(HYPHEN, prev, ch);
-        } else if (flag == ChIs.NextOfSepMark ||
-          (opts.separateAfterNonAlphabets && flag == ChIs.NextOfKeptMark)) {
+        } else if (flag == ChIs.NextOfSepMark
+            || (opts.separateAfterNonAlphabets && flag == ChIs.NextOfKeptMark)) {
           result.append(HYPHEN, ch);
         } else {
           result.append(ch);
@@ -374,12 +367,12 @@ public final class StringCase {
 
   /**
    * Converts the input string to kebab case.
-   * <p>
-   * It treats the end of a sequence of non-alphabetical characters as a word boundary, but not
+   *
+   * <p>It treats the end of a sequence of non-alphabetical characters as a word boundary, but not
    * the beginning.
    *
-   * @param input  The input string.
-   * @return  A string converted to kebab case.
+   * @param input The input string.
+   * @return A string converted to kebab case.
    */
   public static String kebabCase(String input) {
     return kebabCaseWithOptions(input, new Options(false, true, null, null));
@@ -388,10 +381,9 @@ public final class StringCase {
   /**
    * Converts the input string to kebab case with the specified separator characters.
    *
-   * @param input  The input string.
-   * @param seps  The symbol characters to be treated as separators.
-   * @return  A string converted to kebab case.
-   *
+   * @param input The input string.
+   * @param seps The symbol characters to be treated as separators.
+   * @return A string converted to kebab case.
    * @deprecated Should use {@link #kebabCaseWithOptions} instead
    */
   @Deprecated
@@ -402,10 +394,9 @@ public final class StringCase {
   /**
    * Converts the input string to kebab case with the specified characters to be kept.
    *
-   * @param input  The input string.
-   * @param kept  The symbol characters not to be treated as separators.
-   * @return  A string converted to kebab case.
-   *
+   * @param input The input string.
+   * @param kept The symbol characters not to be treated as separators.
+   * @return A string converted to kebab case.
    * @deprecated Should use {@link #kebabCaseWithOptions} instead
    */
   @Deprecated
@@ -416,9 +407,9 @@ public final class StringCase {
   /**
    * Converts the input string to macro case with the specified options.
    *
-   * @param input  The input string.
-   * @param opts  The options with specifies the ways of case conversion.
-   * @return  A string converted to macro case.
+   * @param input The input string.
+   * @param opts The options with specifies the ways of case conversion.
+   * @return A string converted to macro case.
    */
   public static String macroCaseWithOptions(String input, Options opts) {
     var result = new CodepointBuffer(input.length());
@@ -444,8 +435,9 @@ public final class StringCase {
         if (flag == ChIs.FirstOfStr) {
           result.append(ch);
           flag = ChIs.NextOfUpper;
-        } else if (flag == ChIs.NextOfUpper || flag == ChIs.NextOfContdUpper ||
-          (!opts.separateAfterNonAlphabets && flag == ChIs.NextOfKeptMark)) {
+        } else if (flag == ChIs.NextOfUpper
+            || flag == ChIs.NextOfContdUpper
+            || (!opts.separateAfterNonAlphabets && flag == ChIs.NextOfKeptMark)) {
           result.append(ch);
           flag = ChIs.NextOfContdUpper;
         } else {
@@ -456,8 +448,8 @@ public final class StringCase {
         if (flag == ChIs.NextOfContdUpper) {
           int prev = result.last();
           result.replaceLast(UNDERSCORE, prev, Ascii.toUpperCase(ch));
-        } else if (flag == ChIs.NextOfSepMark ||
-          (opts.separateAfterNonAlphabets && flag == ChIs.NextOfKeptMark)) {
+        } else if (flag == ChIs.NextOfSepMark
+            || (opts.separateAfterNonAlphabets && flag == ChIs.NextOfKeptMark)) {
           result.append(UNDERSCORE, Ascii.toUpperCase(ch));
         } else {
           result.append(Ascii.toUpperCase(ch));
@@ -505,12 +497,12 @@ public final class StringCase {
 
   /**
    * Converts the input string to macro case.
-   * <p>
-   * It treats the end of a sequence of non-alphabetical characters as a word boundary, but not
+   *
+   * <p>It treats the end of a sequence of non-alphabetical characters as a word boundary, but not
    * the beginning.
    *
-   * @param input  The input string.
-   * @return  A string converted to macro case.
+   * @param input The input string.
+   * @return A string converted to macro case.
    */
   public static String macroCase(String input) {
     return macroCaseWithOptions(input, new Options(false, true, null, null));
@@ -519,10 +511,9 @@ public final class StringCase {
   /**
    * Converts the input string to macro case with the specified separator characters.
    *
-   * @param input  The input string.
-   * @param seps  The symbol characters to be treated as separators.
-   * @return  A string converted to macro case.
-   *
+   * @param input The input string.
+   * @param seps The symbol characters to be treated as separators.
+   * @return A string converted to macro case.
    * @deprecated Should use {@link #macroCaseWithOptions} instead
    */
   @Deprecated
@@ -533,10 +524,9 @@ public final class StringCase {
   /**
    * Converts the input string to macro case with the specified characters to be kept.
    *
-   * @param input  The input string.
-   * @param kept  The symbol characters not to be treated as separators.
-   * @return  A string converted to macro case.
-   *
+   * @param input The input string.
+   * @param kept The symbol characters not to be treated as separators.
+   * @return A string converted to macro case.
    * @deprecated Should use {@link #macroCaseWithOptions} instead
    */
   @Deprecated
@@ -547,9 +537,9 @@ public final class StringCase {
   /**
    * Converts the input string to pascal case with the specified options.
    *
-   * @param input  The input string.
-   * @param opts  The options which specifies the ways of case conversion.
-   * @return  A string converted to pascal case.
+   * @param input The input string.
+   * @param opts The options which specifies the ways of case conversion.
+   * @return A string converted to pascal case.
    */
   public static String pascalCaseWithOptions(String input, Options opts) {
     var result = new CodepointBuffer(input.length());
@@ -570,8 +560,9 @@ public final class StringCase {
 
     for (int ch : input.codePoints().toArray()) {
       if (Ascii.isUpperCase(ch)) {
-        if (flag == ChIs.NextOfUpper || flag == ChIs.NextOfContdUpper ||
-          (!opts.separateAfterNonAlphabets && flag == ChIs.NextOfKeptMark)) {
+        if (flag == ChIs.NextOfUpper
+            || flag == ChIs.NextOfContdUpper
+            || (!opts.separateAfterNonAlphabets && flag == ChIs.NextOfKeptMark)) {
           result.append(Ascii.toLowerCase(ch));
           flag = ChIs.NextOfContdUpper;
         } else {
@@ -587,8 +578,8 @@ public final class StringCase {
             prev = Ascii.toUpperCase(prev);
           }
           result.replaceLast(prev, ch);
-        } else if (flag == ChIs.NextOfSepMark ||
-          (opts.separateAfterNonAlphabets && flag == ChIs.NextOfKeptMark)) {
+        } else if (flag == ChIs.NextOfSepMark
+            || (opts.separateAfterNonAlphabets && flag == ChIs.NextOfKeptMark)) {
           result.append(Ascii.toUpperCase(ch));
         } else {
           result.append(ch);
@@ -624,12 +615,12 @@ public final class StringCase {
 
   /**
    * Converts the input string to pascal case.
-   * <p>
-   * It treats the end of a sequence of non-alphabetical characters as a word boundary, but not
+   *
+   * <p>It treats the end of a sequence of non-alphabetical characters as a word boundary, but not
    * the beginning.
    *
-   * @param input  The input string.
-   * @return  A string converted to pascal case.
+   * @param input The input string.
+   * @return A string converted to pascal case.
    */
   public static String pascalCase(String input) {
     return pascalCaseWithOptions(input, new Options(false, true, null, null));
@@ -638,10 +629,9 @@ public final class StringCase {
   /**
    * Converts the input string to pascal case with the specified separator characters.
    *
-   * @param input  The input string.
-   * @param seps  The symbol characters to be treated as separators.
-   * @return  A string converted to pascal case.
-   *
+   * @param input The input string.
+   * @param seps The symbol characters to be treated as separators.
+   * @return A string converted to pascal case.
    * @deprecated Should use {@link #pascalCaseWithOptions} instead
    */
   @Deprecated
@@ -652,10 +642,9 @@ public final class StringCase {
   /**
    * Converts the input string to pascal case with the specified characters to be kept.
    *
-   * @param input  The input string.
-   * @param kept  The symbol characters not to be treated as separators.
-   * @return  A string converted to pascal case.
-   *
+   * @param input The input string.
+   * @param kept The symbol characters not to be treated as separators.
+   * @return A string converted to pascal case.
    * @deprecated Should use {@link #pascalCaseWithOptions} instead
    */
   @Deprecated
@@ -666,9 +655,9 @@ public final class StringCase {
   /**
    * Converts the input string to snake case with the specified options.
    *
-   * @param input  The input string.
-   * @param opts  The options with specifies the ways of case conversion.
-   * @return  A string converted to snake case.
+   * @param input The input string.
+   * @param opts The options with specifies the ways of case conversion.
+   * @return A string converted to snake case.
    */
   public static String snakeCaseWithOptions(String input, Options opts) {
     var result = new CodepointBuffer(input.length());
@@ -694,8 +683,9 @@ public final class StringCase {
         if (flag == ChIs.FirstOfStr) {
           result.append(Ascii.toLowerCase(ch));
           flag = ChIs.NextOfUpper;
-        } else if (flag == ChIs.NextOfUpper || flag == ChIs.NextOfContdUpper ||
-          (!opts.separateAfterNonAlphabets && flag == ChIs.NextOfKeptMark)) {
+        } else if (flag == ChIs.NextOfUpper
+            || flag == ChIs.NextOfContdUpper
+            || (!opts.separateAfterNonAlphabets && flag == ChIs.NextOfKeptMark)) {
           result.append(Ascii.toLowerCase(ch));
           flag = ChIs.NextOfContdUpper;
         } else {
@@ -706,8 +696,8 @@ public final class StringCase {
         if (flag == ChIs.NextOfContdUpper) {
           int prev = result.last();
           result.replaceLast(UNDERSCORE, prev, ch);
-        } else if (flag == ChIs.NextOfSepMark ||
-          (opts.separateAfterNonAlphabets && flag == ChIs.NextOfKeptMark)) {
+        } else if (flag == ChIs.NextOfSepMark
+            || (opts.separateAfterNonAlphabets && flag == ChIs.NextOfKeptMark)) {
           result.append(UNDERSCORE, ch);
         } else {
           result.append(ch);
@@ -755,12 +745,12 @@ public final class StringCase {
 
   /**
    * Converts the input string to snake case.
-   * <p>
-   * It treats the end of a sequence of non-alphabetical characters as a word boundary, but not
+   *
+   * <p>It treats the end of a sequence of non-alphabetical characters as a word boundary, but not
    * the beginning.
    *
-   * @param input  The input string.
-   * @return  A string converted to snake case.
+   * @param input The input string.
+   * @return A string converted to snake case.
    */
   public static String snakeCase(String input) {
     return snakeCaseWithOptions(input, new Options(false, true, null, null));
@@ -769,10 +759,9 @@ public final class StringCase {
   /**
    * Converts the input string to snake case with the specified separator characters.
    *
-   * @param input  The input string.
-   * @param seps  The symbol characters to be treated as separators.
-   * @return  A string converted to snake case.
-   *
+   * @param input The input string.
+   * @param seps The symbol characters to be treated as separators.
+   * @return A string converted to snake case.
    * @deprecated Should use {@link #snakeCaseWithOptions} instead
    */
   @Deprecated
@@ -783,10 +772,9 @@ public final class StringCase {
   /**
    * Converts the input string to snake case with the specified characters to be kept.
    *
-   * @param input  The input string.
-   * @param kept  The symbol characters not to be treated as separators.
-   * @return  A string converted to snake case.
-   *
+   * @param input The input string.
+   * @param kept The symbol characters not to be treated as separators.
+   * @return A string converted to snake case.
    * @deprecated Should use {@link #snakeCaseWithOptions} instead
    */
   @Deprecated
@@ -797,9 +785,9 @@ public final class StringCase {
   /**
    * Converts the input string to train case with the specified options.
    *
-   * @param input  The input string.
-   * @param opts  The options with specifies the ways of case conversion.
-   * @return  A string converted to train case.
+   * @param input The input string.
+   * @param opts The options with specifies the ways of case conversion.
+   * @return A string converted to train case.
    */
   public static String trainCaseWithOptions(String input, Options opts) {
     var result = new CodepointBuffer(input.length());
@@ -825,8 +813,9 @@ public final class StringCase {
         if (flag == ChIs.FirstOfStr) {
           result.append(ch);
           flag = ChIs.NextOfUpper;
-        } else if (flag == ChIs.NextOfUpper || flag == ChIs.NextOfContdUpper ||
-          (!opts.separateAfterNonAlphabets && flag == ChIs.NextOfKeptMark)) {
+        } else if (flag == ChIs.NextOfUpper
+            || flag == ChIs.NextOfContdUpper
+            || (!opts.separateAfterNonAlphabets && flag == ChIs.NextOfKeptMark)) {
           result.append(Ascii.toLowerCase(ch));
           flag = ChIs.NextOfContdUpper;
         } else {
@@ -842,8 +831,8 @@ public final class StringCase {
             prev = Ascii.toUpperCase(prev);
           }
           result.replaceLast(HYPHEN, prev, ch);
-        } else if (flag == ChIs.NextOfSepMark ||
-          (opts.separateAfterNonAlphabets && flag == ChIs.NextOfKeptMark)) {
+        } else if (flag == ChIs.NextOfSepMark
+            || (opts.separateAfterNonAlphabets && flag == ChIs.NextOfKeptMark)) {
           result.append(HYPHEN, Ascii.toUpperCase(ch));
         } else {
           result.append(ch);
@@ -891,12 +880,12 @@ public final class StringCase {
 
   /**
    * Converts the input string to train case.
-   * <p>
-   * It treats the end of a sequence of non-alphabetical characters as a word boundary, but not
+   *
+   * <p>It treats the end of a sequence of non-alphabetical characters as a word boundary, but not
    * the beginning.
    *
-   * @param input  The input string.
-   * @return  A string converted to train case.
+   * @param input The input string.
+   * @return A string converted to train case.
    */
   public static String trainCase(String input) {
     return trainCaseWithOptions(input, new Options(false, true, null, null));
@@ -905,10 +894,9 @@ public final class StringCase {
   /**
    * Converts the input string to train case with the specified separator characters.
    *
-   * @param input  The input string.
-   * @param seps  The symbol characters to be treated as separators.
-   * @return  A string converted to train case.
-   *
+   * @param input The input string.
+   * @param seps The symbol characters to be treated as separators.
+   * @return A string converted to train case.
    * @deprecated Should use {@link #trainCaseWithOptions} instead
    */
   @Deprecated
@@ -919,10 +907,9 @@ public final class StringCase {
   /**
    * Converts the input string to train case with the specified characters to be kept.
    *
-   * @param input  The input string.
-   * @param kept  The symbol characters not to be treated as separators.
-   * @return  A string converted to train case.
-   *
+   * @param input The input string.
+   * @param kept The symbol characters not to be treated as separators.
+   * @return A string converted to train case.
    * @deprecated Should use {@link #trainCaseWithOptions} instead
    */
   @Deprecated

@@ -2,6 +2,7 @@ package com.github.sttk.stringcase.codepoint;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.fail;
+
 import org.junit.jupiter.api.Test;
 
 public class CodepointBufferTest {
@@ -15,7 +16,8 @@ public class CodepointBufferTest {
     try {
       buf.last();
       fail();
-    } catch (IndexOutOfBoundsException e) {}
+    } catch (IndexOutOfBoundsException e) {
+    }
   }
 
   @Test

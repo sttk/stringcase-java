@@ -17,6 +17,11 @@ compile() {
   errcheck $?
 }
 
+format() {
+  mvn spotless:apply
+  errcheck $?
+}
+
 test() {
   mvn test
   errcheck $?
@@ -60,6 +65,7 @@ deploy() {
 
 if [[ "$#" == "0" ]]; then
   clean
+  format
   jar
   javadoc
   native_test
@@ -71,6 +77,9 @@ else
       ;;
     compile)
       compile
+      ;;
+    format)
+      format
       ;;
     test)
       test
@@ -103,4 +112,3 @@ else
     esac
   done
 fi
-

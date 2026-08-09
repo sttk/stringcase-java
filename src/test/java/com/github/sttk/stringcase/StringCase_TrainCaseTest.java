@@ -1,13 +1,10 @@
 package com.github.sttk.stringcase;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.fail;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Nested;
-
 import static com.github.sttk.stringcase.StringCase.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import static java.lang.Character.codePointAt;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("missing-explicit-ctor")
 public class StringCase_TrainCaseTest {
@@ -64,26 +61,26 @@ public class StringCase_TrainCaseTest {
 
     @Test
     void convertWithSymbolsAsSeparators() {
-   		var result = trainCase(":.abc~!@def#$ghi%&jk(lm)no/?");
-  		assertThat(result).isEqualTo("Abc-Def-Ghi-Jk-Lm-No");
+      var result = trainCase(":.abc~!@def#$ghi%&jk(lm)no/?");
+      assertThat(result).isEqualTo("Abc-Def-Ghi-Jk-Lm-No");
     }
 
     @Test
     void convertWhenStartingWithDigit() {
-		  var result = trainCase("123abc456def");
-		  assertThat(result).isEqualTo("123-Abc456-Def");
+      var result = trainCase("123abc456def");
+      assertThat(result).isEqualTo("123-Abc456-Def");
 
-		  result = trainCase("123ABC456DEF");
-		  assertThat(result).isEqualTo("123-Abc456-Def");
+      result = trainCase("123ABC456DEF");
+      assertThat(result).isEqualTo("123-Abc456-Def");
 
-		  result = trainCase("123Abc456Def");
-		  assertThat(result).isEqualTo("123-Abc456-Def");
+      result = trainCase("123Abc456Def");
+      assertThat(result).isEqualTo("123-Abc456-Def");
     }
 
     @Test
     void convertAnEmptyString() {
-		  var result = trainCase("");
-		  assertThat(result).isEqualTo("");
+      var result = trainCase("");
+      assertThat(result).isEqualTo("");
     }
   }
 

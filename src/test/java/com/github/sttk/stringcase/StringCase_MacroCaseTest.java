@@ -1,13 +1,10 @@
 package com.github.sttk.stringcase;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.fail;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Nested;
-
 import static com.github.sttk.stringcase.StringCase.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import static java.lang.Character.codePointAt;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("missing-explicit-ctor")
 public class StringCase_MacroCaseTest {
@@ -64,26 +61,26 @@ public class StringCase_MacroCaseTest {
 
     @Test
     void convertWithSymbolsAsSeparators() {
-   		var result = macroCase(":.abc~!@def#$ghi%&jk(lm)no/?");
-  		assertThat(result).isEqualTo("ABC_DEF_GHI_JK_LM_NO");
+      var result = macroCase(":.abc~!@def#$ghi%&jk(lm)no/?");
+      assertThat(result).isEqualTo("ABC_DEF_GHI_JK_LM_NO");
     }
 
     @Test
     void convertWhenStartingWithDigit() {
-		  var result = macroCase("123abc456def");
-		  assertThat(result).isEqualTo("123_ABC456_DEF");
+      var result = macroCase("123abc456def");
+      assertThat(result).isEqualTo("123_ABC456_DEF");
 
-		  result = macroCase("123ABC456DEF");
-		  assertThat(result).isEqualTo("123_ABC456_DEF");
+      result = macroCase("123ABC456DEF");
+      assertThat(result).isEqualTo("123_ABC456_DEF");
 
-		  result = macroCase("123Abc456Def");
-		  assertThat(result).isEqualTo("123_ABC456_DEF");
+      result = macroCase("123Abc456Def");
+      assertThat(result).isEqualTo("123_ABC456_DEF");
     }
 
     @Test
     void convertAnEmptyString() {
-		  var result = macroCase("");
-		  assertThat(result).isEqualTo("");
+      var result = macroCase("");
+      assertThat(result).isEqualTo("");
     }
   }
 

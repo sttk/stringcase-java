@@ -13,17 +13,17 @@ public final class CodepointBuffer {
     buf = new StringBuilder(capacity);
   }
 
-  public void append(int ...cps) {
+  public void append(int... cps) {
     switch (cps.length) {
-    case 0:
-      return;
-    case 1:
-      lastCpIndex = buf.length();
-      buf.appendCodePoint(cps[0]);
-      return;
-    default:
-      buf.append(new String(cps, 0, cps.length));
-      lastCpIndex = buf.length() - Character.charCount(cps[cps.length - 1]);
+      case 0:
+        return;
+      case 1:
+        lastCpIndex = buf.length();
+        buf.appendCodePoint(cps[0]);
+        return;
+      default:
+        buf.append(new String(cps, 0, cps.length));
+        lastCpIndex = buf.length() - Character.charCount(cps[cps.length - 1]);
     }
   }
 
@@ -35,7 +35,7 @@ public final class CodepointBuffer {
     return buf.codePointAt(lastCpIndex);
   }
 
-  public void replaceLast(int cp0, int ...cps) {
+  public void replaceLast(int cp0, int... cps) {
     buf.delete(lastCpIndex, buf.length());
 
     buf.appendCodePoint(cp0);
