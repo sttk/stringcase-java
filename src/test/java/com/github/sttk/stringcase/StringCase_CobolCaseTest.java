@@ -1,13 +1,10 @@
 package com.github.sttk.stringcase;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.fail;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Nested;
-
 import static com.github.sttk.stringcase.StringCase.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import static java.lang.Character.codePointAt;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("missing-explicit-ctor")
 public class StringCase_CobolCaseTest {
@@ -64,26 +61,26 @@ public class StringCase_CobolCaseTest {
 
     @Test
     void convertWithSymbolsAsSeparators() {
-   		var result = cobolCase(":.abc~!@def#$ghi%&jk(lm)no/?");
-  		assertThat(result).isEqualTo("ABC-DEF-GHI-JK-LM-NO");
+      var result = cobolCase(":.abc~!@def#$ghi%&jk(lm)no/?");
+      assertThat(result).isEqualTo("ABC-DEF-GHI-JK-LM-NO");
     }
 
     @Test
     void convertWhenStartingWithDigit() {
-		  var result = cobolCase("123abc456def");
-		  assertThat(result).isEqualTo("123-ABC456-DEF");
+      var result = cobolCase("123abc456def");
+      assertThat(result).isEqualTo("123-ABC456-DEF");
 
-		  result = cobolCase("123ABC456DEF");
-		  assertThat(result).isEqualTo("123-ABC456-DEF");
+      result = cobolCase("123ABC456DEF");
+      assertThat(result).isEqualTo("123-ABC456-DEF");
 
-		  result = cobolCase("123Abc456Def");
-		  assertThat(result).isEqualTo("123-ABC456-DEF");
+      result = cobolCase("123Abc456Def");
+      assertThat(result).isEqualTo("123-ABC456-DEF");
     }
 
     @Test
     void convertAnEmptyString() {
-		  var result = cobolCase("");
-		  assertThat(result).isEqualTo("");
+      var result = cobolCase("");
+      assertThat(result).isEqualTo("");
     }
   }
 

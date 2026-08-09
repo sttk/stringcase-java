@@ -1,13 +1,10 @@
 package com.github.sttk.stringcase;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.fail;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Nested;
-
 import static com.github.sttk.stringcase.StringCase.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import static java.lang.Character.codePointAt;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("missing-explicit-ctor")
 public class StringCase_KebabCaseTest {
@@ -64,26 +61,26 @@ public class StringCase_KebabCaseTest {
 
     @Test
     void convertWithSymbolsAsSeparators() {
-   		var result = kebabCase(":.abc~!@def#$ghi%&jk(lm)no/?");
-  		assertThat(result).isEqualTo("abc-def-ghi-jk-lm-no");
+      var result = kebabCase(":.abc~!@def#$ghi%&jk(lm)no/?");
+      assertThat(result).isEqualTo("abc-def-ghi-jk-lm-no");
     }
 
     @Test
     void convertWhenStartingWithDigit() {
-		  var result = kebabCase("123abc456def");
-		  assertThat(result).isEqualTo("123-abc456-def");
+      var result = kebabCase("123abc456def");
+      assertThat(result).isEqualTo("123-abc456-def");
 
-		  result = kebabCase("123ABC456DEF");
-		  assertThat(result).isEqualTo("123-abc456-def");
+      result = kebabCase("123ABC456DEF");
+      assertThat(result).isEqualTo("123-abc456-def");
 
-		  result = kebabCase("123Abc456Def");
-		  assertThat(result).isEqualTo("123-abc456-def");
+      result = kebabCase("123Abc456Def");
+      assertThat(result).isEqualTo("123-abc456-def");
     }
 
     @Test
     void convertAnEmptyString() {
-		  var result = kebabCase("");
-		  assertThat(result).isEqualTo("");
+      var result = kebabCase("");
+      assertThat(result).isEqualTo("");
     }
   }
 

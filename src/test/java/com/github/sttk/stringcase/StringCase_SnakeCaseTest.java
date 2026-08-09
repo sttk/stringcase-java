@@ -1,13 +1,10 @@
 package com.github.sttk.stringcase;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.fail;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Nested;
-
 import static com.github.sttk.stringcase.StringCase.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import static java.lang.Character.codePointAt;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("missing-explicit-ctor")
 public class StringCase_SnakeCaseTest {
@@ -64,26 +61,26 @@ public class StringCase_SnakeCaseTest {
 
     @Test
     void convertWithSymbolsAsSeparators() {
-   		var result = snakeCase(":.abc~!@def#$ghi%&jk(lm)no/?");
-  		assertThat(result).isEqualTo("abc_def_ghi_jk_lm_no");
+      var result = snakeCase(":.abc~!@def#$ghi%&jk(lm)no/?");
+      assertThat(result).isEqualTo("abc_def_ghi_jk_lm_no");
     }
 
     @Test
     void convertWhenStartingWithDigit() {
-		  var result = snakeCase("123abc456def");
-		  assertThat(result).isEqualTo("123_abc456_def");
+      var result = snakeCase("123abc456def");
+      assertThat(result).isEqualTo("123_abc456_def");
 
-		  result = snakeCase("123ABC456DEF");
-		  assertThat(result).isEqualTo("123_abc456_def");
+      result = snakeCase("123ABC456DEF");
+      assertThat(result).isEqualTo("123_abc456_def");
 
-		  result = snakeCase("123Abc456Def");
-		  assertThat(result).isEqualTo("123_abc456_def");
+      result = snakeCase("123Abc456Def");
+      assertThat(result).isEqualTo("123_abc456_def");
     }
 
     @Test
     void convertAnEmptyString() {
-		  var result = snakeCase("");
-		  assertThat(result).isEqualTo("");
+      var result = snakeCase("");
+      assertThat(result).isEqualTo("");
     }
   }
 

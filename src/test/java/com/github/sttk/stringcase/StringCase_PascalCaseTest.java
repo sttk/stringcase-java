@@ -1,13 +1,10 @@
 package com.github.sttk.stringcase;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.fail;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Nested;
-
 import static com.github.sttk.stringcase.StringCase.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import static java.lang.Character.codePointAt;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("missing-explicit-ctor")
 public class StringCase_PascalCaseTest {
@@ -64,26 +61,26 @@ public class StringCase_PascalCaseTest {
 
     @Test
     void convertWithSymbolsAsSeparators() {
-   		var result = pascalCase(":.abc~!@def#$ghi%&jk(lm)no/?");
-  		assertThat(result).isEqualTo("AbcDefGhiJkLmNo");
+      var result = pascalCase(":.abc~!@def#$ghi%&jk(lm)no/?");
+      assertThat(result).isEqualTo("AbcDefGhiJkLmNo");
     }
 
     @Test
     void convertWhenStartingWithDigit() {
-		  var result = pascalCase("123abc456def");
-		  assertThat(result).isEqualTo("123Abc456Def");
+      var result = pascalCase("123abc456def");
+      assertThat(result).isEqualTo("123Abc456Def");
 
-		  result = pascalCase("123ABC456DEF");
-		  assertThat(result).isEqualTo("123Abc456Def");
+      result = pascalCase("123ABC456DEF");
+      assertThat(result).isEqualTo("123Abc456Def");
 
-		  result = pascalCase("123Abc456Def");
-		  assertThat(result).isEqualTo("123Abc456Def");
+      result = pascalCase("123Abc456Def");
+      assertThat(result).isEqualTo("123Abc456Def");
     }
 
     @Test
     void convertAnEmptyString() {
-		  var result = pascalCase("");
-		  assertThat(result).isEqualTo("");
+      var result = pascalCase("");
+      assertThat(result).isEqualTo("");
     }
   }
 

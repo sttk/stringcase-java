@@ -1,10 +1,9 @@
 package com.github.sttk.stringcase.codepoint;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.fail;
-import org.junit.jupiter.api.Test;
-
 import static java.lang.Character.codePointAt;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import org.junit.jupiter.api.Test;
 
 public class AsciiTest {
 
@@ -16,8 +15,8 @@ public class AsciiTest {
     assertThat(Ascii.isUpperCase(codePointAt(":", 0))).isFalse(); // 0x3a
 
     assertThat(Ascii.isUpperCase(codePointAt("@", 0))).isFalse(); // 0x40
-    assertThat(Ascii.isUpperCase(codePointAt("A", 0))).isTrue();  // 0x41
-    assertThat(Ascii.isUpperCase(codePointAt("Z", 0))).isTrue();  // 0x5a
+    assertThat(Ascii.isUpperCase(codePointAt("A", 0))).isTrue(); // 0x41
+    assertThat(Ascii.isUpperCase(codePointAt("Z", 0))).isTrue(); // 0x5a
     assertThat(Ascii.isUpperCase(codePointAt("[", 0))).isFalse(); // 0x5b
 
     assertThat(Ascii.isUpperCase(codePointAt("`", 0))).isFalse(); // 0x60
@@ -39,16 +38,16 @@ public class AsciiTest {
     assertThat(Ascii.isLowerCase(codePointAt("[", 0))).isFalse(); // 0x5b
 
     assertThat(Ascii.isLowerCase(codePointAt("`", 0))).isFalse(); // 0x60
-    assertThat(Ascii.isLowerCase(codePointAt("a", 0))).isTrue();  // 0x61
-    assertThat(Ascii.isLowerCase(codePointAt("z", 0))).isTrue();  // 0x7a
+    assertThat(Ascii.isLowerCase(codePointAt("a", 0))).isTrue(); // 0x61
+    assertThat(Ascii.isLowerCase(codePointAt("z", 0))).isTrue(); // 0x7a
     assertThat(Ascii.isLowerCase(codePointAt("{", 0))).isFalse(); // 0x7b
   }
 
   @Test
   void testIsDigit() {
     assertThat(Ascii.isDigit(codePointAt("/", 0))).isFalse(); // 0x2f
-    assertThat(Ascii.isDigit(codePointAt("0", 0))).isTrue();  // 0x30
-    assertThat(Ascii.isDigit(codePointAt("9", 0))).isTrue();  // 0x39
+    assertThat(Ascii.isDigit(codePointAt("0", 0))).isTrue(); // 0x30
+    assertThat(Ascii.isDigit(codePointAt("9", 0))).isTrue(); // 0x39
     assertThat(Ascii.isDigit(codePointAt(":", 0))).isFalse(); // 0x3a
 
     assertThat(Ascii.isDigit(codePointAt("@", 0))).isFalse(); // 0x40
