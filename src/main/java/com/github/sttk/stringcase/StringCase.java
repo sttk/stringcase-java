@@ -349,7 +349,7 @@ public final class StringCase {
    * {@code opts.SeparateBeforeNonAlphabets} and {@code opts.SeparateAfterNonAlphabets} further
    * determine whether word boundaries are inserted before or after non-alphabetic sequences.
    *
-   * <p>This function never returns an error or panics on any input, returning an empty string when
+   * <p>This static method never throws an exception on any input, returning an empty string when
    * the input is empty. Casing transformations and word boundary detections apply strictly to ASCII
    * letters, treating non-ASCII characters as non-alphanumeric. If both {@code opts.Separators} and
    * {@code opts.Keep} are specified, {@code opts.Separators} takes precedence and {@code opts.Keep}
@@ -386,7 +386,7 @@ public final class StringCase {
    * {@code opts.SeparateBeforeNonAlphabets} and {@code opts.SeparateAfterNonAlphabets} further
    * determine whether word boundaries are inserted before or after non-alphabetic sequences.
    *
-   * <p>This function never returns an error or panics on any input, returning an empty string when
+   * <p>This static method never throws an exception on any input, returning an empty string when
    * the input is empty. Casing transformations and word boundary detections apply strictly to ASCII
    * letters, treating non-ASCII characters as non-alphanumeric. If both {@code opts.Separators} and
    * {@code opts.Keep} are specified, {@code opts.Separators} takes precedence and {@code opts.Keep}
