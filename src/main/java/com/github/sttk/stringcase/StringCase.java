@@ -580,32 +580,6 @@ public final class StringCase {
   }
 
   /**
-   * Converts the input string to camel case with the specified separator characters.
-   *
-   * @param input The input string.
-   * @param seps The symbol characters to be treated as separators.
-   * @return A string converted to camel case.
-   * @deprecated Should use {@link #camelCaseWithOptions} instead
-   */
-  @Deprecated
-  public static String camelCaseWithSep(String input, String seps) {
-    return camelCaseWithOptions(input, new Options(false, true, seps, null));
-  }
-
-  /**
-   * Converts the input string to camel case with the specified characters to be kept.
-   *
-   * @param input The input string.
-   * @param kept The symbol characters not to be treated as separators.
-   * @return A string converted to camel case.
-   * @deprecated Should use {@link #camelCaseWithOptions} instead
-   */
-  @Deprecated
-  public static String camelCaseWithKeep(String input, String kept) {
-    return camelCaseWithOptions(input, new Options(false, true, null, kept));
-  }
-
-  /**
    * Converts the input string to cobol case with the specified options.
    *
    * @param input The input string.
@@ -707,32 +681,6 @@ public final class StringCase {
    */
   public static String cobolCase(String input) {
     return cobolCaseWithOptions(input, new Options(false, true, null, null));
-  }
-
-  /**
-   * Converts the input string to cobol case with the specified separator characters.
-   *
-   * @param input The input string.
-   * @param seps The symbol characters to be treated as separators.
-   * @return A string converted to cobol case.
-   * @deprecated Should use {@link #cobolCaseWithOptions} instead
-   */
-  @Deprecated
-  public static String cobolCaseWithSep(String input, String seps) {
-    return cobolCaseWithOptions(input, new Options(false, true, seps, null));
-  }
-
-  /**
-   * Converts the input string to cobol case with the specified characters to be kept.
-   *
-   * @param input The input string.
-   * @param kept The symbol characters not to be treated as separators.
-   * @return A string converted to cobol case.
-   * @deprecated Should use {@link #cobolCaseWithOptions} instead
-   */
-  @Deprecated
-  public static String cobolCaseWithKeep(String input, String kept) {
-    return cobolCaseWithOptions(input, new Options(false, true, null, kept));
   }
 
   /**
@@ -840,32 +788,6 @@ public final class StringCase {
   }
 
   /**
-   * Converts the input string to kebab case with the specified separator characters.
-   *
-   * @param input The input string.
-   * @param seps The symbol characters to be treated as separators.
-   * @return A string converted to kebab case.
-   * @deprecated Should use {@link #kebabCaseWithOptions} instead
-   */
-  @Deprecated
-  public static String kebabCaseWithSep(String input, String seps) {
-    return kebabCaseWithOptions(input, new Options(false, true, seps, null));
-  }
-
-  /**
-   * Converts the input string to kebab case with the specified characters to be kept.
-   *
-   * @param input The input string.
-   * @param kept The symbol characters not to be treated as separators.
-   * @return A string converted to kebab case.
-   * @deprecated Should use {@link #kebabCaseWithOptions} instead
-   */
-  @Deprecated
-  public static String kebabCaseWithKeep(String input, String kept) {
-    return kebabCaseWithOptions(input, new Options(false, true, null, kept));
-  }
-
-  /**
    * Converts the input string to macro case with the specified options.
    *
    * @param input The input string.
@@ -970,32 +892,6 @@ public final class StringCase {
   }
 
   /**
-   * Converts the input string to macro case with the specified separator characters.
-   *
-   * @param input The input string.
-   * @param seps The symbol characters to be treated as separators.
-   * @return A string converted to macro case.
-   * @deprecated Should use {@link #macroCaseWithOptions} instead
-   */
-  @Deprecated
-  public static String macroCaseWithSep(String input, String seps) {
-    return macroCaseWithOptions(input, new Options(false, true, seps, null));
-  }
-
-  /**
-   * Converts the input string to macro case with the specified characters to be kept.
-   *
-   * @param input The input string.
-   * @param kept The symbol characters not to be treated as separators.
-   * @return A string converted to macro case.
-   * @deprecated Should use {@link #macroCaseWithOptions} instead
-   */
-  @Deprecated
-  public static String macroCaseWithKeep(String input, String kept) {
-    return macroCaseWithOptions(input, new Options(false, true, null, kept));
-  }
-
-  /**
    * Converts the input string to pascal case with the specified options.
    *
    * @param input The input string.
@@ -1085,32 +981,6 @@ public final class StringCase {
    */
   public static String pascalCase(String input) {
     return pascalCaseWithOptions(input, new Options(false, true, null, null));
-  }
-
-  /**
-   * Converts the input string to pascal case with the specified separator characters.
-   *
-   * @param input The input string.
-   * @param seps The symbol characters to be treated as separators.
-   * @return A string converted to pascal case.
-   * @deprecated Should use {@link #pascalCaseWithOptions} instead
-   */
-  @Deprecated
-  public static String pascalCaseWithSep(String input, String seps) {
-    return pascalCaseWithOptions(input, new Options(false, true, seps, null));
-  }
-
-  /**
-   * Converts the input string to pascal case with the specified characters to be kept.
-   *
-   * @param input The input string.
-   * @param kept The symbol characters not to be treated as separators.
-   * @return A string converted to pascal case.
-   * @deprecated Should use {@link #pascalCaseWithOptions} instead
-   */
-  @Deprecated
-  public static String pascalCaseWithKeep(String input, String kept) {
-    return pascalCaseWithOptions(input, new Options(false, true, null, kept));
   }
 
   /**
@@ -1215,32 +1085,6 @@ public final class StringCase {
    */
   public static String snakeCase(String input) {
     return snakeCaseWithOptions(input, new Options(false, true, null, null));
-  }
-
-  /**
-   * Converts the input string to snake case with the specified separator characters.
-   *
-   * @param input The input string.
-   * @param seps The symbol characters to be treated as separators.
-   * @return A string converted to snake case.
-   * @deprecated Should use {@link #snakeCaseWithOptions} instead
-   */
-  @Deprecated
-  public static String snakeCaseWithSep(String input, String seps) {
-    return snakeCaseWithOptions(input, new Options(false, true, seps, null));
-  }
-
-  /**
-   * Converts the input string to snake case with the specified characters to be kept.
-   *
-   * @param input The input string.
-   * @param kept The symbol characters not to be treated as separators.
-   * @return A string converted to snake case.
-   * @deprecated Should use {@link #snakeCaseWithOptions} instead
-   */
-  @Deprecated
-  public static String snakeCaseWithKeep(String input, String kept) {
-    return snakeCaseWithOptions(input, new Options(false, true, null, kept));
   }
 
   /**
@@ -1350,31 +1194,5 @@ public final class StringCase {
    */
   public static String trainCase(String input) {
     return trainCaseWithOptions(input, new Options(false, true, null, null));
-  }
-
-  /**
-   * Converts the input string to train case with the specified separator characters.
-   *
-   * @param input The input string.
-   * @param seps The symbol characters to be treated as separators.
-   * @return A string converted to train case.
-   * @deprecated Should use {@link #trainCaseWithOptions} instead
-   */
-  @Deprecated
-  public static String trainCaseWithSep(String input, String seps) {
-    return trainCaseWithOptions(input, new Options(false, true, seps, null));
-  }
-
-  /**
-   * Converts the input string to train case with the specified characters to be kept.
-   *
-   * @param input The input string.
-   * @param kept The symbol characters not to be treated as separators.
-   * @return A string converted to train case.
-   * @deprecated Should use {@link #trainCaseWithOptions} instead
-   */
-  @Deprecated
-  public static String trainCaseWithKeep(String input, String kept) {
-    return trainCaseWithOptions(input, new Options(false, true, null, kept));
   }
 }
