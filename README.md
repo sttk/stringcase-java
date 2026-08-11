@@ -65,8 +65,8 @@ The static methods contained in this library are executed as follows:
 import com.github.sttk.stringcase.StringCase;
 
 public static void main(String[] args) {
-    var input = "fooBar123Bar";
-    var snake := StringCase.snakeCase(input);
+    var input = "fooBar123Baz";
+    var snake = StringCase.snakeCase(input);
     System.out.println(snake);  // => "foo_bar123_baz"
 }
 ```
@@ -79,8 +79,8 @@ import com.github.sttk.stringcase.Options;
 
 public static void main(String[] args) {
     var opts = new Options(true, true, null, null);
-    var input = "fooBar123Bar";
-    var snake := StringCase.snakeCaseWithOptions(input, opts);
+    var input = "fooBar123Baz";
+    var snake = StringCase.snakeCaseWithOptions(input, opts);
     System.out.println(snake);  // => "foo_bar_123_baz"
 }
 ```
@@ -93,8 +93,8 @@ import com.github.sttk.stringcase.Options;
 
 public static void main(String[] args) {
     var opts = new Options(true, true, null, null);
-    var input = "fooBar123Bar";
-    var output := StringCase.capitalize(input, '.', opts);
+    var input = "fooBar123Baz";
+    var output = StringCase.capitalize(input, '.', opts);
     System.out.println(snake);  // => "Foo.Bar.123.Baz"
 }
 ```
