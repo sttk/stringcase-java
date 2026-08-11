@@ -6,25 +6,24 @@ Train-Case.
 In addition, the static methods of `StringCase` class: `capitalize`, `lowerize`, and `upperize` are
 provided to convert string cases with a custom joiner character.
 
-
 Essentially, these static methods only target ASCII uppercase and lowercase letters for
 capitalization.
 All characters other than ASCII uppercase and lowercase letters and ASCII numbers are removed as
 word separators.
 
 If you want to use some symbols as separators, specify those symbols in the `separators` field of
-an `Options` instance and use the `〜CaseWithOptions` methods for the desired case.
+an `Options` instance and use the `〜CaseWithOptions` static methods for the desired case.
 If you want to retain certain symbols and use everything else as separators, specify those symbols
-in `keep` field of an `Options` instance and use the `〜CaseWithOptions` methods for the desired
-case.
+in `keep` field of an `Options` instance and use the `〜CaseWithOptions` static methods for the
+desired case.
 
 Additionally, you can specify whether to place word boundaries before and/or after non-alphabetic
 characters with conversion options.
 This can be set using the `separateBeforeNonAlphabets` and `separateAfterNonAlphabets` fields in
 the `Options` instance.
 
-The `〜Case` methods that do not take `Options` as an argument only place word boundaries after
-non-alphabetic characters.
+The `〜Case` static methods that do not take `Options` as an argument only place word boundaries
+after non-alphabetic characters.
 In other words, they behave as if
 `separateBeforeNonAlphabets = false` and `separateAfterNonAlphabets = true`.
 
@@ -60,18 +59,44 @@ dependencies {
 
 ## Usage
 
-The following code converts the argument text into various cases.
+The static methods contained in this library are executed as follows:
 
-```
+```java
 import com.github.sttk.stringcase.StringCase;
-...
-    var input = "foo_barBAZQux";
-    var camel = StringCase.camelCase(input); // => fooBarBazQux
-    var cobol = StringCase.cobolCase(input); // => FOO-BAR-BAZ-QUX
-    var kebab = StringCase.kebabCase(input); // => foo-bar-baz-qux
-    var macro = StringCase.macroCase(input); // => FOO_BAR_BAZ_QUX
-    var pascal = StringCase.pascalCase(input); // => FooBarBazQux
-    var train = StringCase.trainCase(input); // => Foo-Bar-Baz-Qux
+
+public static void main(String[] args) {
+    var input = "fooBar123Baz";
+    var snake = StringCase.snakeCase(input);
+    System.out.println(snake);  // => "foo_bar123_baz"
+}
+```
+
+If you want the conversion to behave differently, use `〜CaseWithOptions`.
+
+```java
+import com.github.sttk.stringcase.StringCase;
+import com.github.sttk.stringcase.Options;
+
+public static void main(String[] args) {
+    var opts = new Options(true, true, null, null);
+    var input = "fooBar123Baz";
+    var snake = StringCase.snakeCaseWithOptions(input, opts);
+    System.out.println(snake);  // => "foo_bar_123_baz"
+}
+```
+
+You can also use the static method `capitalize`, `lowerize`, and `upperize` to convert strings into capitalized, lowercased, or uppercased words joined by a custom joiner character:
+
+```java
+import com.github.sttk.stringcase.StringCase;
+import com.github.sttk.stringcase.Options;
+
+public static void main(String[] args) {
+    var opts = new Options(true, true, null, null);
+    var input = "fooBar123Baz";
+    var output = StringCase.capitalize(input, '.', opts);
+    System.out.println(snake);  // => "Foo.Bar.123.Baz"
+}
 ```
 
 ## Native build
@@ -93,7 +118,7 @@ This framework supports JDK 21 or later.
 ### Actually checked JDK versions:
 
 - Oracle GraalVM 21.0.6+8.1 (java version "21.0.6" 2025-01-21 LTS)
-- Oracle GraalVM 23.0.2+7.1 (java version "23.0.2" 2025-01-21)
+- Oracle GraalVM 25.0.1+8.1 (java version "25.0.1" 2025-10-21 LTS)
 
 ## License
 
