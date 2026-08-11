@@ -1,11 +1,12 @@
 /*
  * package-info class.
- * Copyright (C) 2024-2025 Takayuki Sato. All Rights Reserved.
+ * Copyright (C) 2024-2026 Takayuki Sato. All Rights Reserved.
  */
 
 /**
- * This package contains modules related to converting string case.
+ * Provides a class for converting strings to various naming conventions.
  *
- * @version 0.2
+ * @version 1.0
+ * @since 1.0
  */
 package com.github.sttk.stringcase;

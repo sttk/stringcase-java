@@ -22,6 +22,8 @@ import java.util.Arrays;
  *   <li>Title Case
  *   <li>Train-Case
  * </ul>
+ *
+ * @since 1.0
  */
 public final class StringCase {
   private StringCase() {}

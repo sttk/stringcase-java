@@ -1,4 +1,4 @@
-# [stringcase-java][repo-url] [![Maven Central][mvn-img]][mvn-url] [![GitHub.io][io-img]][io-url] [![CI Status][ci-img]][ci-url] [![MIT License][mit-img]][mit-url]
+# [stringcase-java][repo-url] [![Maven Central][mvn-img]][mvn-url] [![MVN Repository][mvnrepo-img]][mvnrepo-url] [![GitHub.io][io-img]][io-url] [![CI Status][ci-img]][ci-url] [![MIT License][mit-img]][mit-url]
 
 This library provides some static methods of `StringCase` class that convert string cases between
 Ada_Case, camelCase, COBOL-CASE, kebab-case, MACRO_CASE, PascalCase, snake_case, Title Case, and
@@ -41,7 +41,7 @@ Maven `pom.xml` and Gradle `build.gradle` are as follows:
     <dependency>
       <groupId>io.github.sttk</groupId>
       <artifactId>stringcase</artifactId>
-      <version>0.2.0</version>
+      <version>1.0.0</version>
     </dependency>
   </dependencies>
 ```
@@ -53,7 +53,7 @@ repositories {
   mavenCentral()
 }
 dependencies {
-  implementation 'io.github.sttk:stringcase:0.2.0'
+  implementation 'io.github.sttk:stringcase:1.0.0'
 }
 ```
 
@@ -122,18 +122,20 @@ This framework supports JDK 21 or later.
 
 ## License
 
-Copyright (C) 2024-2025 Takayuki Sato
+Copyright (C) 2024-2026 Takayuki Sato
 
 This program is free software under MIT License.<br>
 See the file LICENSE in this distribution for more details.
 
 
 [repo-url]: https://github.com/sttk/stringcase-java
-[mvn-img]: https://img.shields.io/badge/maven_central-0.2.0-276bdd.svg
-[mvn-url]: https://central.sonatype.com/artifact/io.github.sttk/stringcase/0.2.0
+[mvn-img]: https://img.shields.io/badge/maven_central-1.0.0-276bdd.svg
+[mvn-url]: https://central.sonatype.com/artifact/io.github.sttk/stringcase/1.0.0
+[mvnrepo-img]: https://img.shields.io/badge/mvn_repository-1.0.0-498df4.svg
+[mvnrepo-url]: https://mvnrepository.com/artifact/io.github.sttk/stringcase
 [io-img]: https://img.shields.io/badge/github.io-Javadoc-4d7a97.svg
 [io-url]: https://sttk.github.io/stringcase-java/
 [ci-img]: https://github.com/sttk/stringcase-java/actions/workflows/java-ci.yml/badge.svg?branch=main
-[ci-url]: https://github.com/sttk/stringcase-java/actions
+[ci-url]: https://github.com/sttk/stringcase-java/actions?query=branch%3Amain
 [mit-img]: https://img.shields.io/badge/license-MIT-green.svg
 [mit-url]: https://opensource.org/licenses/MIT

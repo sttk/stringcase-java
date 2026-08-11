@@ -4,7 +4,11 @@
  */
 package com.github.sttk.stringcase;
 
-/** Is a class that represents options which specifies the ways of case conversion of strings. */
+/**
+ * Is a class that represents options which specifies the ways of case conversion of strings.
+ *
+ * @since 1.0
+ */
 public class Options {
   /**
    * Specifies whether to treat the beginning of a sequence of non-alphabetical characters as a word
