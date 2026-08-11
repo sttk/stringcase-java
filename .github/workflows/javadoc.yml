@@ -1,19 +1,21 @@
 name: Javadoc
 
+permissions:
+  contents: write
+
 on:
   release:
     types: [ created ]
-
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v7
     - name: GitHub Action for GraalVM
       uses: graalvm/setup-graalvm@v1
       with:
-        java-version: 23
+        java-version: 25
         distribution: 'graalvm'
         github_token: ${{ secrets.GITHUB_TOKEN }}
     - name: Compile
