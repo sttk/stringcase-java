@@ -11,7 +11,17 @@ import java.util.Arrays;
 /**
  * Is the class that provides the static methods to convert a string to following cases.
  *
- * <p>- camelCase - COBOL-CASE - kebab-case - MACRO_CASE - PascalCase - snake_case - Train-Case
+ * <ul>
+ *   <li>Ada_Case
+ *   <li>camelCase
+ *   <li>COBOL-CASE
+ *   <li>kebab-case
+ *   <li>MACRO_CASE
+ *   <li>PascalCase
+ *   <li>snake_case
+ *   <li>Title Case
+ *   <li>Train-Case
+ * </ul>
  */
 public final class StringCase {
   private StringCase() {}

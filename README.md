@@ -1,8 +1,11 @@
 # [stringcase-java][repo-url] [![Maven Central][mvn-img]][mvn-url] [![GitHub.io][io-img]][io-url] [![CI Status][ci-img]][ci-url] [![MIT License][mit-img]][mit-url]
 
-This library provides some static methods that convert string cases between
-camelCase, COBOL-CASE, kebab-case, MACRO_CASE, PascalCase, snake_case and
+This library provides some static methods of `StringCase` class that convert string cases between
+Ada_Case, camelCase, COBOL-CASE, kebab-case, MACRO_CASE, PascalCase, snake_case, Title Case, and
 Train-Case.
+In addition, the static methods of `StringCase` class: `capitalize`, `lowerize`, and `upperize` are
+provided to convert string cases with a custom joiner character.
+
 
 Essentially, these static methods only target ASCII uppercase and lowercase letters for
 capitalization.
