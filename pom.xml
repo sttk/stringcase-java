@@ -88,12 +88,13 @@
         <version>3.12.0</version>
         <configuration>
           <author>true</author>
-          <source>21</source>
+          <source>25</source>
           <show>protected</show>
           <encoding>UTF-8</encoding>
           <charset>UTF-8</charset>
           <docencoding>UTF-8</docencoding>
-          <bottom><![CDATA[Copyright 2024 Takayuki Sato. All Rights Reserved.]]></bottom>
+          <bottom><![CDATA[Copyright 2024-2026 Takayuki Sato. All Rights Reserved.]]></bottom>
+          <outputDirectory>${project.reporting.outputDirectory}</outputDirectory>
         </configuration>
         <executions>
           <execution>
@@ -192,7 +193,7 @@
     <profile>
       <id>trace</id>
       <properties>
-        <argLine>-agentlib:native-image-agent=config-output-dir=src/main/resources/META-INF/native-image</argLine>
+        <argLine>-agentlib:native-image-agent=config-output-dir=target/native-trace</argLine>
       </properties>
     </profile>
     <profile>
@@ -206,38 +207,17 @@
       </distributionManagement>
     </profile>
     <profile>
-      <id>release-ossrh</id>
-      <distributionManagement>
-        <snapshotRepository>
-          <id>ossrh</id>
-          <name>Central Repository OSSRH (Snapshot)</name>
-          <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
-        </snapshotRepository>
-        <repository>
-          <id>ossrh</id>
-          <name>Central Repository OSSRH</name>
-          <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-        </repository>
-      </distributionManagement>
+      <id>release-central</id>
       <build>
         <plugins>
           <plugin>
-            <groupId>org.sonatype.plugins</groupId>
-            <artifactId>nexus-staging-maven-plugin</artifactId>
-            <version>1.7.0</version>
+            <groupId>org.sonatype.central</groupId>
+            <artifactId>central-publishing-maven-plugin</artifactId>
+            <version>0.11.0</version>
             <extensions>true</extensions>
-            <executions>
-              <execution>
-                <phase>deploy</phase>
-                <goals>
-                  <goal>deploy</goal>
-                </goals>
-              </execution>
-            </executions>
             <configuration>
-              <serverId>ossrh</serverId>
-              <nexusUrl>https://s01.oss.sonatype.org</nexusUrl>
-              <autoReleaseAfterClose>true</autoReleaseAfterClose>
+              <publishingServerId>central</publishingServerId>
+              <autoPublish>true</autoPublish>
             </configuration>
           </plugin>
           <plugin>
@@ -252,7 +232,9 @@
                   <goal>sign</goal>
                 </goals>
                 <configuration>
+                  <useAgent>false</useAgent>
                   <gpgArguments>
+                    <arg>--batch</arg>
                     <arg>--pinentry-mode</arg>
                     <arg>loopback</arg>
                   </gpgArguments>
