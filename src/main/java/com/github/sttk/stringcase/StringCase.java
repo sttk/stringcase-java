@@ -583,7 +583,7 @@ public final class StringCase {
    * Converts the input string to cobol case with the specified options.
    *
    * @param input The input string.
-   * @param opts The options with specifies the ways of case conversion.
+   * @param opts The options which specifies the ways of case conversion.
    * @return A string converted to cobol case.
    */
   public static String cobolCaseWithOptions(String input, Options opts) {
@@ -609,7 +609,7 @@ public final class StringCase {
    * Converts the input string to kebab case with the specified options.
    *
    * @param input The input string.
-   * @param opts The options with specifies the ways of case conversion.
+   * @param opts The options which specifies the ways of case conversion.
    * @return A string converted to kebab case.
    */
   public static String kebabCaseWithOptions(String input, Options opts) {
@@ -635,7 +635,7 @@ public final class StringCase {
    * Converts the input string to macro case with the specified options.
    *
    * @param input The input string.
-   * @param opts The options with specifies the ways of case conversion.
+   * @param opts The options which specifies the ways of case conversion.
    * @return A string converted to macro case.
    */
   public static String macroCaseWithOptions(String input, Options opts) {
@@ -753,7 +753,7 @@ public final class StringCase {
    * Converts the input string to snake case with the specified options.
    *
    * @param input The input string.
-   * @param opts The options with specifies the ways of case conversion.
+   * @param opts The options which specifies the ways of case conversion.
    * @return A string converted to snake case.
    */
   public static String snakeCaseWithOptions(String input, Options opts) {
@@ -779,7 +779,7 @@ public final class StringCase {
    * Converts the input string to train case with the specified options.
    *
    * @param input The input string.
-   * @param opts The options with specifies the ways of case conversion.
+   * @param opts The options which specifies the ways of case conversion.
    * @return A string converted to train case.
    */
   public static String trainCaseWithOptions(String input, Options opts) {
@@ -805,7 +805,7 @@ public final class StringCase {
    * Converts the input string to Ada case with the specified options.
    *
    * @param input The input string.
-   * @param opts The options with specifies the ways of case conversion.
+   * @param opts The options which specifies the ways of case conversion.
    * @return A string converted to Ada case.
    */
   public static String adaCaseWithOptions(String input, Options opts) {
@@ -831,7 +831,7 @@ public final class StringCase {
    * Converts the input string to title case with the specified options.
    *
    * @param input The input string.
-   * @param opts The options with specifies the ways of case conversion.
+   * @param opts The options which specifies the ways of case conversion.
    * @return A string converted to title case.
    */
   public static String titleCaseWithOptions(String input, Options opts) {
