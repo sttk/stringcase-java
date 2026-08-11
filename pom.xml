@@ -10,7 +10,7 @@
   <packaging>jar</packaging>
 
   <name>stringcase</name>
-  <description>Converts string cases between camelCase, COBOL-CASE, kebab-case, MACRO_CASE, PascalCase, snake_case and Train-Case.</description>
+  <description>Converts string cases between Ada_Case, camelCase, COBOL-CASE, kebab-case, MACRO_CASE, PascalCase, snake_case, Title Case, and Train-Case.</description>
   <url>https://github.com/sttk/stringcase-java</url>
 
   <licenses>
