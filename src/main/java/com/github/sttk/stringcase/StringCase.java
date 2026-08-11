@@ -587,87 +587,8 @@ public final class StringCase {
    * @return A string converted to cobol case.
    */
   public static String cobolCaseWithOptions(String input, Options opts) {
-    var result = new CodepointBuffer(input.length());
-
     final int HYPHEN = 0x2d;
-
-    var flag = ChIs.FirstOfStr;
-
-    int[] sepChs = null;
-    if (opts.separators != null && !opts.separators.isEmpty()) {
-      sepChs = opts.separators.codePoints().toArray();
-      Arrays.sort(sepChs);
-    }
-
-    int[] keptChs = null;
-    if (opts.keep != null && !opts.keep.isEmpty()) {
-      keptChs = opts.keep.codePoints().toArray();
-      Arrays.sort(keptChs);
-    }
-
-    for (int ch : input.codePoints().toArray()) {
-      if (Ascii.isUpperCase(ch)) {
-        if (flag == ChIs.FirstOfStr) {
-          result.append(ch);
-          flag = ChIs.NextOfUpper;
-        } else if (flag == ChIs.NextOfUpper
-            || flag == ChIs.NextOfContdUpper
-            || (!opts.separateAfterNonAlphabets && flag == ChIs.NextOfKeptMark)) {
-          result.append(ch);
-          flag = ChIs.NextOfContdUpper;
-        } else {
-          result.append(HYPHEN, ch);
-          flag = ChIs.NextOfUpper;
-        }
-      } else if (Ascii.isLowerCase(ch)) {
-        if (flag == ChIs.NextOfContdUpper) {
-          int prev = result.last();
-          result.replaceLast(HYPHEN, prev, Ascii.toUpperCase(ch));
-        } else if (flag == ChIs.NextOfSepMark
-            || (opts.separateAfterNonAlphabets && flag == ChIs.NextOfKeptMark)) {
-          result.append(HYPHEN, Ascii.toUpperCase(ch));
-        } else {
-          result.append(Ascii.toUpperCase(ch));
-        }
-        flag = ChIs.Others;
-      } else {
-        var isKeptChar = false;
-        if (Ascii.isDigit(ch)) {
-          isKeptChar = true;
-        } else if (sepChs != null) {
-          if (Arrays.binarySearch(sepChs, ch) < 0) {
-            isKeptChar = true;
-          }
-        } else if (keptChs != null) {
-          if (Arrays.binarySearch(keptChs, ch) >= 0) {
-            isKeptChar = true;
-          }
-        }
-
-        if (isKeptChar) {
-          if (opts.separateBeforeNonAlphabets) {
-            if (flag == ChIs.FirstOfStr || flag == ChIs.NextOfKeptMark) {
-              result.append(ch);
-            } else {
-              result.append(HYPHEN, ch);
-            }
-          } else {
-            if (flag != ChIs.NextOfSepMark) {
-              result.append(ch);
-            } else {
-              result.append(HYPHEN, ch);
-            }
-          }
-          flag = ChIs.NextOfKeptMark;
-        } else {
-          if (flag != ChIs.FirstOfStr) {
-            flag = ChIs.NextOfSepMark;
-          }
-        }
-      }
-    }
-
-    return result.toString();
+    return upperize(input, HYPHEN, opts);
   }
 
   /**
@@ -680,7 +601,8 @@ public final class StringCase {
    * @return A string converted to cobol case.
    */
   public static String cobolCase(String input) {
-    return cobolCaseWithOptions(input, new Options(false, true, null, null));
+    final int HYPHEN = 0x2d;
+    return upperize(input, HYPHEN, new Options(false, true, null, null));
   }
 
   /**
@@ -691,87 +613,8 @@ public final class StringCase {
    * @return A string converted to kebab case.
    */
   public static String kebabCaseWithOptions(String input, Options opts) {
-    var result = new CodepointBuffer(input.length());
-
     final int HYPHEN = 0x2d;
-
-    var flag = ChIs.FirstOfStr;
-
-    int[] sepChs = null;
-    if (opts.separators != null && !opts.separators.isEmpty()) {
-      sepChs = opts.separators.codePoints().toArray();
-      Arrays.sort(sepChs);
-    }
-
-    int[] keptChs = null;
-    if (opts.keep != null && !opts.keep.isEmpty()) {
-      keptChs = opts.keep.codePoints().toArray();
-      Arrays.sort(keptChs);
-    }
-
-    for (int ch : input.codePoints().toArray()) {
-      if (Ascii.isUpperCase(ch)) {
-        if (flag == ChIs.FirstOfStr) {
-          result.append(Ascii.toLowerCase(ch));
-          flag = ChIs.NextOfUpper;
-        } else if (flag == ChIs.NextOfUpper
-            || flag == ChIs.NextOfContdUpper
-            || (!opts.separateAfterNonAlphabets && flag == ChIs.NextOfKeptMark)) {
-          result.append(Ascii.toLowerCase(ch));
-          flag = ChIs.NextOfContdUpper;
-        } else {
-          result.append(HYPHEN, Ascii.toLowerCase(ch));
-          flag = ChIs.NextOfUpper;
-        }
-      } else if (Ascii.isLowerCase(ch)) {
-        if (flag == ChIs.NextOfContdUpper) {
-          int prev = result.last();
-          result.replaceLast(HYPHEN, prev, ch);
-        } else if (flag == ChIs.NextOfSepMark
-            || (opts.separateAfterNonAlphabets && flag == ChIs.NextOfKeptMark)) {
-          result.append(HYPHEN, ch);
-        } else {
-          result.append(ch);
-        }
-        flag = ChIs.Others;
-      } else {
-        var isKeptChar = false;
-        if (Ascii.isDigit(ch)) {
-          isKeptChar = true;
-        } else if (sepChs != null) {
-          if (Arrays.binarySearch(sepChs, ch) < 0) {
-            isKeptChar = true;
-          }
-        } else if (keptChs != null) {
-          if (Arrays.binarySearch(keptChs, ch) >= 0) {
-            isKeptChar = true;
-          }
-        }
-
-        if (isKeptChar) {
-          if (opts.separateBeforeNonAlphabets) {
-            if (flag == ChIs.FirstOfStr || flag == ChIs.NextOfKeptMark) {
-              result.append(ch);
-            } else {
-              result.append(HYPHEN, ch);
-            }
-          } else {
-            if (flag != ChIs.NextOfSepMark) {
-              result.append(ch);
-            } else {
-              result.append(HYPHEN, ch);
-            }
-          }
-          flag = ChIs.NextOfKeptMark;
-        } else {
-          if (flag != ChIs.FirstOfStr) {
-            flag = ChIs.NextOfSepMark;
-          }
-        }
-      }
-    }
-
-    return result.toString();
+    return lowerize(input, HYPHEN, opts);
   }
 
   /**
@@ -784,7 +627,8 @@ public final class StringCase {
    * @return A string converted to kebab case.
    */
   public static String kebabCase(String input) {
-    return kebabCaseWithOptions(input, new Options(false, true, null, null));
+    final int HYPHEN = 0x2d;
+    return lowerize(input, HYPHEN, new Options(false, true, null, null));
   }
 
   /**
@@ -795,87 +639,8 @@ public final class StringCase {
    * @return A string converted to macro case.
    */
   public static String macroCaseWithOptions(String input, Options opts) {
-    var result = new CodepointBuffer(input.length());
-
     final int UNDERSCORE = 0x5f;
-
-    var flag = ChIs.FirstOfStr;
-
-    int[] sepChs = null;
-    if (opts.separators != null && !opts.separators.isEmpty()) {
-      sepChs = opts.separators.codePoints().toArray();
-      Arrays.sort(sepChs);
-    }
-
-    int[] keptChs = null;
-    if (opts.keep != null && !opts.keep.isEmpty()) {
-      keptChs = opts.keep.codePoints().toArray();
-      Arrays.sort(keptChs);
-    }
-
-    for (int ch : input.codePoints().toArray()) {
-      if (Ascii.isUpperCase(ch)) {
-        if (flag == ChIs.FirstOfStr) {
-          result.append(ch);
-          flag = ChIs.NextOfUpper;
-        } else if (flag == ChIs.NextOfUpper
-            || flag == ChIs.NextOfContdUpper
-            || (!opts.separateAfterNonAlphabets && flag == ChIs.NextOfKeptMark)) {
-          result.append(ch);
-          flag = ChIs.NextOfContdUpper;
-        } else {
-          result.append(UNDERSCORE, ch);
-          flag = ChIs.NextOfUpper;
-        }
-      } else if (Ascii.isLowerCase(ch)) {
-        if (flag == ChIs.NextOfContdUpper) {
-          int prev = result.last();
-          result.replaceLast(UNDERSCORE, prev, Ascii.toUpperCase(ch));
-        } else if (flag == ChIs.NextOfSepMark
-            || (opts.separateAfterNonAlphabets && flag == ChIs.NextOfKeptMark)) {
-          result.append(UNDERSCORE, Ascii.toUpperCase(ch));
-        } else {
-          result.append(Ascii.toUpperCase(ch));
-        }
-        flag = ChIs.Others;
-      } else {
-        var isKeptChar = false;
-        if (Ascii.isDigit(ch)) {
-          isKeptChar = true;
-        } else if (sepChs != null) {
-          if (Arrays.binarySearch(sepChs, ch) < 0) {
-            isKeptChar = true;
-          }
-        } else if (keptChs != null) {
-          if (Arrays.binarySearch(keptChs, ch) >= 0) {
-            isKeptChar = true;
-          }
-        }
-
-        if (isKeptChar) {
-          if (opts.separateBeforeNonAlphabets) {
-            if (flag == ChIs.FirstOfStr || flag == ChIs.NextOfKeptMark) {
-              result.append(ch);
-            } else {
-              result.append(UNDERSCORE, ch);
-            }
-          } else {
-            if (flag != ChIs.NextOfSepMark) {
-              result.append(ch);
-            } else {
-              result.append(UNDERSCORE, ch);
-            }
-          }
-          flag = ChIs.NextOfKeptMark;
-        } else {
-          if (flag != ChIs.FirstOfStr) {
-            flag = ChIs.NextOfSepMark;
-          }
-        }
-      }
-    }
-
-    return result.toString();
+    return upperize(input, UNDERSCORE, opts);
   }
 
   /**
@@ -888,7 +653,8 @@ public final class StringCase {
    * @return A string converted to macro case.
    */
   public static String macroCase(String input) {
-    return macroCaseWithOptions(input, new Options(false, true, null, null));
+    final int UNDERSCORE = 0x5f;
+    return upperize(input, UNDERSCORE, new Options(false, true, null, null));
   }
 
   /**
@@ -991,87 +757,8 @@ public final class StringCase {
    * @return A string converted to snake case.
    */
   public static String snakeCaseWithOptions(String input, Options opts) {
-    var result = new CodepointBuffer(input.length());
-
     final int UNDERSCORE = 0x5f;
-
-    var flag = ChIs.FirstOfStr;
-
-    int[] sepChs = null;
-    if (opts.separators != null && !opts.separators.isEmpty()) {
-      sepChs = opts.separators.codePoints().toArray();
-      Arrays.sort(sepChs);
-    }
-
-    int[] keptChs = null;
-    if (opts.keep != null && !opts.keep.isEmpty()) {
-      keptChs = opts.keep.codePoints().toArray();
-      Arrays.sort(keptChs);
-    }
-
-    for (int ch : input.codePoints().toArray()) {
-      if (Ascii.isUpperCase(ch)) {
-        if (flag == ChIs.FirstOfStr) {
-          result.append(Ascii.toLowerCase(ch));
-          flag = ChIs.NextOfUpper;
-        } else if (flag == ChIs.NextOfUpper
-            || flag == ChIs.NextOfContdUpper
-            || (!opts.separateAfterNonAlphabets && flag == ChIs.NextOfKeptMark)) {
-          result.append(Ascii.toLowerCase(ch));
-          flag = ChIs.NextOfContdUpper;
-        } else {
-          result.append(UNDERSCORE, Ascii.toLowerCase(ch));
-          flag = ChIs.NextOfUpper;
-        }
-      } else if (Ascii.isLowerCase(ch)) {
-        if (flag == ChIs.NextOfContdUpper) {
-          int prev = result.last();
-          result.replaceLast(UNDERSCORE, prev, ch);
-        } else if (flag == ChIs.NextOfSepMark
-            || (opts.separateAfterNonAlphabets && flag == ChIs.NextOfKeptMark)) {
-          result.append(UNDERSCORE, ch);
-        } else {
-          result.append(ch);
-        }
-        flag = ChIs.Others;
-      } else {
-        var isKeptChar = false;
-        if (Ascii.isDigit(ch)) {
-          isKeptChar = true;
-        } else if (sepChs != null) {
-          if (Arrays.binarySearch(sepChs, ch) < 0) {
-            isKeptChar = true;
-          }
-        } else if (keptChs != null) {
-          if (Arrays.binarySearch(keptChs, ch) >= 0) {
-            isKeptChar = true;
-          }
-        }
-
-        if (isKeptChar) {
-          if (opts.separateBeforeNonAlphabets) {
-            if (flag == ChIs.FirstOfStr || flag == ChIs.NextOfKeptMark) {
-              result.append(ch);
-            } else {
-              result.append(UNDERSCORE, ch);
-            }
-          } else {
-            if (flag != ChIs.NextOfSepMark) {
-              result.append(ch);
-            } else {
-              result.append(UNDERSCORE, ch);
-            }
-          }
-          flag = ChIs.NextOfKeptMark;
-        } else {
-          if (flag != ChIs.FirstOfStr) {
-            flag = ChIs.NextOfSepMark;
-          }
-        }
-      }
-    }
-
-    return result.toString();
+    return lowerize(input, UNDERSCORE, opts);
   }
 
   /**
@@ -1084,7 +771,8 @@ public final class StringCase {
    * @return A string converted to snake case.
    */
   public static String snakeCase(String input) {
-    return snakeCaseWithOptions(input, new Options(false, true, null, null));
+    final int UNDERSCORE = 0x5f;
+    return lowerize(input, UNDERSCORE, new Options(false, true, null, null));
   }
 
   /**
@@ -1095,92 +783,8 @@ public final class StringCase {
    * @return A string converted to train case.
    */
   public static String trainCaseWithOptions(String input, Options opts) {
-    var result = new CodepointBuffer(input.length());
-
     final int HYPHEN = 0x2d;
-
-    var flag = ChIs.FirstOfStr;
-
-    int[] sepChs = null;
-    if (opts.separators != null && !opts.separators.isEmpty()) {
-      sepChs = opts.separators.codePoints().toArray();
-      Arrays.sort(sepChs);
-    }
-
-    int[] keptChs = null;
-    if (opts.keep != null && !opts.keep.isEmpty()) {
-      keptChs = opts.keep.codePoints().toArray();
-      Arrays.sort(keptChs);
-    }
-
-    for (int ch : input.codePoints().toArray()) {
-      if (Ascii.isUpperCase(ch)) {
-        if (flag == ChIs.FirstOfStr) {
-          result.append(ch);
-          flag = ChIs.NextOfUpper;
-        } else if (flag == ChIs.NextOfUpper
-            || flag == ChIs.NextOfContdUpper
-            || (!opts.separateAfterNonAlphabets && flag == ChIs.NextOfKeptMark)) {
-          result.append(Ascii.toLowerCase(ch));
-          flag = ChIs.NextOfContdUpper;
-        } else {
-          result.append(HYPHEN, ch);
-          flag = ChIs.NextOfUpper;
-        }
-      } else if (Ascii.isLowerCase(ch)) {
-        if (flag == ChIs.FirstOfStr) {
-          result.append(Ascii.toUpperCase(ch));
-        } else if (flag == ChIs.NextOfContdUpper) {
-          int prev = result.last();
-          if (Ascii.isLowerCase(prev)) {
-            prev = Ascii.toUpperCase(prev);
-          }
-          result.replaceLast(HYPHEN, prev, ch);
-        } else if (flag == ChIs.NextOfSepMark
-            || (opts.separateAfterNonAlphabets && flag == ChIs.NextOfKeptMark)) {
-          result.append(HYPHEN, Ascii.toUpperCase(ch));
-        } else {
-          result.append(ch);
-        }
-        flag = ChIs.Others;
-      } else {
-        var isKeptChar = false;
-        if (Ascii.isDigit(ch)) {
-          isKeptChar = true;
-        } else if (sepChs != null) {
-          if (Arrays.binarySearch(sepChs, ch) < 0) {
-            isKeptChar = true;
-          }
-        } else if (keptChs != null) {
-          if (Arrays.binarySearch(keptChs, ch) >= 0) {
-            isKeptChar = true;
-          }
-        }
-
-        if (isKeptChar) {
-          if (opts.separateBeforeNonAlphabets) {
-            if (flag == ChIs.FirstOfStr || flag == ChIs.NextOfKeptMark) {
-              result.append(ch);
-            } else {
-              result.append(HYPHEN, ch);
-            }
-          } else {
-            if (flag != ChIs.NextOfSepMark) {
-              result.append(ch);
-            } else {
-              result.append(HYPHEN, ch);
-            }
-          }
-          flag = ChIs.NextOfKeptMark;
-        } else {
-          if (flag != ChIs.FirstOfStr) {
-            flag = ChIs.NextOfSepMark;
-          }
-        }
-      }
-    }
-
-    return result.toString();
+    return capitalize(input, HYPHEN, opts);
   }
 
   /**
@@ -1193,6 +797,7 @@ public final class StringCase {
    * @return A string converted to train case.
    */
   public static String trainCase(String input) {
-    return trainCaseWithOptions(input, new Options(false, true, null, null));
+    final int HYPHEN = 0x2d;
+    return capitalize(input, HYPHEN, new Options(false, true, null, null));
   }
 }
