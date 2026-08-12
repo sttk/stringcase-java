@@ -1,9 +1,13 @@
 /*
  * module-info class.
- * Copyright (C) 2024 Takayuki Sato. All Rights Reserved.
+ * Copyright (C) 2024-2026 Takayuki Sato. All Rights Reserved.
  */
 
-/** Defines the module of this library. */
+/**
+ * Contains a package for converting strings to various naming conventions.
+ *
+ * @version 1.0
+ */
 module com.github.sttk.stringcase {
   exports com.github.sttk.stringcase;
 }
