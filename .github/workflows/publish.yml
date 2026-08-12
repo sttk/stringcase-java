@@ -1,4 +1,4 @@
-name: Publish package to the Maven Central Repository and GitHub Packages
+name: Publish package to the Maven Central Repository
 
 on:
   release:
@@ -18,28 +18,24 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: 21
+
       - name: Build with Maven
         run: mvn -ntp -B package
-      - name: Publish to GitHub Packages
-        run: mvn -ntp -B -DskipTests -Prelease-gh deploy
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Maven Central Repository
         uses: actions/setup-java@v5
         with:
           java-version: '21'
           distribution: 'temurin'
-          server-id: ossrh
+          server-id: central
           server-username: MAVEN_USERNAME
           server-password: MAVEN_PASSWORD
-          gpg-private-key: ${{ secrets.OSSRH_GPG_PRIVATE_KEY }}
+          gpg-private-key: ${{ secrets.CENTRAL_GPG_PRIVATE_KEY }}
           gpg-passphrase: MAVEN_GPG_PASSPHRASE
-      - name: Publish to the Maven Central Repository
-        run: |
-          mvn -ntp -B -DskipTests -Prelease-ossrh deploy
-        env:
-          MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-          MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
-          MAVEN_GPG_PASSPHRASE: ${{ secrets.OSSRH_GPG_PASSPHRASE }}
 
+      - name: Publish to the Maven Central Repository
+        run: mvn -ntp -B -DskipTests -Prelease-central deploy
+        env:
+          MAVEN_USERNAME: ${{ secrets.CENTRAL_TOKEN_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.CENTRAL_TOKEN_PASSWORD }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.CENTRAL_GPG_PASS_PHRASE }}
