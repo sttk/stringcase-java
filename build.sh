@@ -1,65 +1,49 @@
 #!/usr/bin/env bash
 
-errcheck() {
-  exitcd=$1
-  if [[ "$exitcd" != "0" ]]; then
-    exit $exitcd
-  fi
-}
+set -euo pipefail
 
 clean() {
   mvn clean
-  errcheck $?
 }
 
 compile() {
   mvn compile
-  errcheck $?
 }
 
 format() {
   mvn spotless:apply
-  errcheck $?
 }
 
 test() {
   mvn test
-  errcheck $?
 }
 
 jar() {
   mvn package
-  errcheck $?
 }
 
 javadoc() {
   mvn javadoc:javadoc
-  errcheck $?
 }
 
 deps() {
   mvn versions:display-dependency-updates
-  errcheck $?
 }
 
 sver() {
   serialver -classpath target/classes $1
-  errcheck $?
 }
 
 trace_test() {
   mvn -Ptrace test
-  errcheck $?
 }
 
 native_test() {
   mvn -Pnative test
-  errcheck $?
 }
 
 deploy() {
   mvn deploy
-  errcheck $?
 }
 
 
