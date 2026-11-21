@@ -8,7 +8,25 @@ on:
     branches: [ '*', '*/*' ]
 
 jobs:
-  build:
+  build-by-openjdk:
+    name: Build for OpenJDK ${{ matrix.javaver }} on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        javaver: [21, 22, 23, 24, 25, 26, 27]
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    steps:
+    - uses: actions/checkout@v7
+    - name: GitHub Action for OpenJDK
+      uses: actions/setup-java@v6
+      with:
+        java-version: ${{ matrix.javaver }}
+        distribution: 'oracle-openjdk'
+    - name: Build and test
+      run: mvn package
+
+  build-by-graalvm:
     name: Build for GraalVM (OpenJDK ${{ matrix.javaver }}) on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
